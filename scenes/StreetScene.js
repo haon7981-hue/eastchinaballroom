@@ -1,32 +1,25 @@
-// scenes/StreetScene.js
-export default class StreetScene extends Phaser.Scene {
+class StreetScene extends Phaser.Scene {
   constructor() {
     super("StreetScene");
   }
 
-  preload() {
-    this.load.image("street", "assets/tileset/street_tiles.png");
-    this.load.spritesheet("mc_walk", "assets/mc/mc_walk.png", {
-      frameWidth: 64,
-      frameHeight: 64
-    });
-  }
-
   create() {
-    // 背景
-    const bg = this.add.image(0, 0, "street").setOrigin(0);
 
-    // 背景等比例缩放（适配 1920×1080 或任何浏览器尺寸）
-    const scaleX = this.cameras.main.width / bg.width;
-    const scaleY = this.cameras.main.height / bg.height;
-    const scale = Math.max(scaleX, scaleY);
-    bg.setScale(scale);
+    // 加载 tilemap
+    const map = this.make.tilemap({
+      key: "street_map",
+      tileWidth: 64,
+      tileHeight: 64
+    });
 
-    // 主角
-    this.player = this.physics.add.sprite(400, 300, "mc_walk", 0);
-    this.player.setScale(1.2); // 缩放主角
+    const tiles = map.addTilesetImage("street", "street_tiles");
 
-    // 动画
+    const groundLayer = map.createLayer("ground", tiles, 0, 0);
+
+    // 主角出生点
+    this.player = this.physics.add.sprite(300, 300, "mc_walk", 0);
+
+    // 创建动画
     this.anims.create({
       key: "mc_walk_anim",
       frames: this.anims.generateFrameNumbers("mc_walk", { start: 0, end: 7 }),
@@ -34,34 +27,41 @@ export default class StreetScene extends Phaser.Scene {
       repeat: -1
     });
 
-    // 摄像机跟随人物
+    // 摄像头跟随
     this.cameras.main.startFollow(this.player);
-    this.cameras.main.setZoom(1.5);
 
-    // 控制
+    // 地图边界限制摄像头
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+    // 移动输入
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.W = this.input.keyboard.addKey("W");
-    this.A = this.input.keyboard.addKey("A");
-    this.S = this.input.keyboard.addKey("S");
-    this.D = this.input.keyboard.addKey("D");
   }
 
   update() {
-    const speed = 180;
-    let vx = 0, vy = 0;
+    const speed = 200;
 
-    if (this.cursors.left.isDown || this.A.isDown) vx = -speed;
-    else if (this.cursors.right.isDown || this.D.isDown) vx = speed;
+    this.player.setVelocity(0);
 
-    if (this.cursors.up.isDown || this.W.isDown) vy = -speed;
-    else if (this.cursors.down.isDown || this.S.isDown) vy = speed;
-
-    this.player.setVelocity(vx, vy);
-
-    if (vx !== 0 || vy !== 0) {
-      this.player.anims.play("mc_walk_anim", true);
-    } else {
-      this.player.anims.stop();
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-speed);
+      this.player.play("mc_walk_anim", true);
+    } 
+    else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(speed);
+      this.player.play("mc_walk_anim", true);
+    } 
+    else if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-speed);
+      this.player.play("mc_walk_anim", true);
+    } 
+    else if (this.cursors.down.isDown) {
+      this.player.setVelocityY(speed);
+      this.player.play("mc_walk_anim", true);
+    } 
+    else {
+      this.player.setVelocity(0);
+      this.player.stop();
     }
   }
 }

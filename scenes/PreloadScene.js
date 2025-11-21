@@ -5,51 +5,53 @@ class PreloadScene extends Phaser.Scene {
 
   preload() {
 
-    // 主角行走图
+    // ===== 主角 =====
     this.load.spritesheet("mc_walk", "assets/mc/mc_walk.png", {
       frameWidth: 64,
       frameHeight: 64
     });
+    this.load.image("mc_stand", "assets/mc/mc_stand.png");
 
-    // 舞女行走图（如果要）
+    // ===== 舞女（立绘）=====
+    this.load.image("dancer_a", "assets/dancer/dancer_a.png");
+    this.load.image("dancer_b", "assets/dancer/dancer_b.png");
+    this.load.image("dancer_c", "assets/dancer/dancer_c.png");
     this.load.spritesheet("dancer_walk", "assets/dancer/dancer_walk.png", {
       frameWidth: 64,
       frameHeight: 64
     });
 
-    // 龙女 walking
+    // ===== 龙女 =====
+    this.load.image("dragon_a", "assets/dragon/dragon_a.png");
+    this.load.image("dragon_b", "assets/dragon/dragon_b.png");
+    this.load.image("dragon_c", "assets/dragon/dragon_c.png");
     this.load.spritesheet("dragon_walk", "assets/dragon/dragon_walk.png", {
       frameWidth: 64,
       frameHeight: 64
     });
 
-    // NPC 混混 walking
+    // ===== NPC =====
+    this.load.image("npc_hooligan", "assets/npc/npc_hooligan.png");
     this.load.spritesheet("npc_hooligan_walk", "assets/npc/npc_hooligan_walk.png", {
       frameWidth: 64,
       frameHeight: 64
     });
 
-    // 苏州老街 Tiles
+    // ===== Tileset =====
     this.load.image("street_tiles", "assets/tileset/street_tiles.png");
-
-    // 舞厅 Tiles
+    this.load.image("street_night_tiles", "assets/tileset/street_night_tiles.png");
     this.load.image("ballroom_tiles", "assets/tileset/ballroom_tiles.png");
-
-    // 舞厅暗区
+    this.load.image("ballroom_hall_tiles", "assets/tileset/ballroom_hall_tiles.png");
     this.load.image("ballroom_dark_tiles", "assets/tileset/ballroom_dark_tiles.png");
-
-    // 舞厅反光地板
     this.load.image("ballroom_floor_reflect", "assets/tileset/ballroom_floor_reflect.png");
-
-    // 舞厅 VIP
     this.load.image("ballroom_vip_tiles", "assets/tileset/ballroom_vip_tiles.png");
 
-    // CG 场景
-    this.load.image("cg_sit", "assets/cg/cg_sit.png");
-    this.load.image("cg_rain", "assets/cg/cg_rain.png");
+    // ===== CG =====
     this.load.image("cg_dragon_back", "assets/cg/cg_dragon_back.png");
+    this.load.image("cg_rain", "assets/cg/cg_rain.png");
+    this.load.image("cg_sit", "assets/cg/cg_sit.png");
 
-    // 背景音乐
+    // ===== 音乐 =====
     this.load.audio("bgm", "assets/audio/bgm.mp3");
   }
 

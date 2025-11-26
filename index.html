@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>华东砂砂舞厅 · 完整版</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:#080012;
+  color:#fff;
+  font-family:"Microsoft YaHei",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  min-height:100vh;
+}
+#header{
+  width:100%;
+  padding:10px 0;
+  text-align:center;
+  font-size:20px;
+  color:#ff5bd7;
+  background:#140024;
+  border-bottom:2px solid #ff5bd7;
+}
+#header small{
+  display:block;
+  font-size:12px;
+  margin-top:2px;
+  color:#ffbaf1;
+}
+#gameBox{
+  width:92%;
+  max-width:950px;
+  margin:16px auto 70px auto;
+  padding:18px 16px 24px 16px;
+  background:rgba(15,0,30,0.92);
+  border:1px solid #ff5bd7;
+  border-radius:18px;
+  box-shadow:0 0 22px rgba(255,91,215,0.45);
+}
+#chapterTitle{
+  text-align:center;
+  font-size:22px;
+  color:#ff8fe4;
+  margin-bottom:14px;
+  font-weight:bold;
+}
+#text{
+  white-space:pre-line;
+  line-height:1.8;
+  font-size:16px;
+  margin-bottom:14px;
+}
+#wechatBox{
+  margin:6px 0 12px 0;
+  padding:10px;
+  border-radius:14px;
+  background:#111;
+  border:1px solid #444;
+  font-size:14px;
+  max-height:230px;
+  overflow-y:auto;
+  display:none;
+}
+.wx-row{display:flex;margin:4px 0;}
+.wx-me{justify-content:flex-end;}
+.wx-her{justify-content:flex-start;}
+.wx-bubble{
+  max-width:72%;
+  padding:6px 10px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.4;
+}
+.wx-me .wx-bubble{
+  background:#95ec69;
+  color:#000;
+}
+.wx-her .wx-bubble{
+  background:#fff;
+  color:#000;
+  border:1px solid #e5e5e5;
+}
+#choices{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.choiceBtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:1 1 30%;
+  max-width:32%;
+  min-width:120px;
+  margin:6px 4px;
+  padding:10px 8px;
+  text-align:center;
+  background:#ff2dac;
+  border-radius:22px;
+  font-size:15px;
+  text-decoration:none;
+  color:#fff;
+  cursor:pointer;
+  border:none;
+  transition:background .15s,transform .1s;
+}
+.choiceBtn:hover{
+  background:#ff5bd7;
+  transform:translateY(-1px);
+}
+.choiceBtn:active{
+  transform:translateY(0);
+}
+#statusBar{
+  position:fixed;
+  left:0;
+  bottom:0;
+  width:100%;
+  background:#140024;
+  border-top:2px solid #ff5bd7;
+  padding:6px 4px;
+  font-size:12px;
+  color:#ffd2fa;
+  text-align:center;
+  white-space:nowrap;
+  overflow-x:auto;
+}
+#statusBar span{
+  margin:0 6px;
+}
+@media(max-width:600px){
+  #chapterTitle{font-size:18px;}
+  #text{font-size:14px;}
+  .choiceBtn{font-size:13px;padding:8px 6px;min-width:104px;}
+}
+</style>
+</head>
+<body>
+<div id="header">
+  华东砂砂舞厅
+  <small>作者 华东舞厅电报群  https://t.me/eastchinaballroom</small>
+</div>
+<div id="gameBox">
+  <div id="chapterTitle"></div>
+  <div id="text">加载中…</div>
+  <div id="wechatBox"></div>
+  <div id="choices"></div>
+</div>
+<div id="statusBar">
+  <span id="statusRole">身份 未选择</span>
+  <span id="statusMoney">金钱 0</span>
+  <span id="statusDebt">负债 0</span>
+  <span id="statusUp">上头 0</span>
+  <span id="statusHate">仇恨 0</span>
+  <span id="statusSkill">砂技 0</span>
+  <span id="statusConf">自信 0</span>
+  <span id="statusHp">体力 100</span>
+</div>
+<script>
+// ===== 基础数据 =====
+const roles = {
+  oldman:{name:"退休老头", money:400, debt:0, up:10, hate:0, skill:20, conf:40},
+  worker:{name:"工厂打工人", money:200, debt:0, up:10, hate:0, skill:0, conf:10},
+  mid:{name:"失业中年", money:300, debt:0, up:15, hate:5, skill:5, conf:20},
+  rich:{name:"富二代", money:800, debt:0, up:20, hate:0, skill:10, conf:60},
+  landlord:{name:"拆迁户", money:600, debt:0, up:15, hate:0, skill:0, conf:30},
+  it:{name:"IT 男", money:260, debt:0, up:5, hate:0, skill:0, conf:5}
+};
+
+// 舞女数据库 20 人
+const dancers = [
+  {id:1,name:"小艾", kind:"普通", greed:55, warmth:60},
+  {id:2,name:"小雨", kind:"普通", greed:45, warmth:70},
+  {id:3,name:"小莲", kind:"普通", greed:50, warmth:65},
+  {id:4,name:"小珊", kind:"普通", greed:60, warmth:55},
+  {id:5,name:"小宁", kind:"普通", greed:40, warmth:75},
+  {id:6,name:"小糖", kind:"热情", greed:65, warmth:90},
+  {id:7,name:"小菲", kind:"热情", greed:70, warmth:85},
+  {id:8,name:"小柚", kind:"热情", greed:68, warmth:88},
+  {id:9,name:"小娜", kind:"热情", greed:72, warmth:92},
+  {id:10,name:"小熙", kind:"热情", greed:75, warmth:80},
+  {id:11,name:"小冰", kind:"机车", greed:85, warmth:30},
+  {id:12,name:"小洁", kind:"机车", greed:88, warmth:25},
+  {id:13,name:"小琴", kind:"机车", greed:90, warmth:20},
+  {id:14,name:"小慧", kind:"机车", greed:82, warmth:35},
+  {id:15,name:"小姿", kind:"机车", greed:87, warmth:28},
+  {id:16,name:"小梅", kind:"龙女", greed:60, warmth:60},
+  {id:17,name:"小青", kind:"龙女", greed:65, warmth:55},
+  {id:18,name:"小婧", kind:"龙女", greed:70, warmth:65},
+  {id:19,name:"小琴琴", kind:"龙女", greed:68, warmth:62},
+  {id:20,name:"小微", kind:"龙女", greed:72, warmth:58}
+];
+
+let player = {
+  roleKey:null, money:0, debt:0, up:0, hate:0, skill:0, conf:0, hp:100,
+  favDancer:null, chapter:0,
+  lastDancerId:null, sameCount:0,
+  hasLoan:false, loanTimes:0, reported:false
+};
+
+let currentDancer = null;
+let wxLog = [];
+
+// ===== UI 辅助 =====
+function setChapter(title){
+  document.getElementById("chapterTitle").innerText = title;
+}
+function setText(t){
+  document.getElementById("text").innerText = t;
+}
+function clearChoices(){
+  document.getElementById("choices").innerHTML = "";
+}
+function addChoice(label, action){
+  const btn = document.createElement("button");
+  btn.className = "choiceBtn";
+  btn.innerText = label;
+  btn.onclick = action;
+  document.getElementById("choices").appendChild(btn);
+}
+function updateStatus(){
+  const rName = player.roleKey ? roles[player.roleKey].name : "未选择";
+  document.getElementById("statusRole").innerText = "身份 " + rName;
+  document.getElementById("statusMoney").innerText = "金钱 " + player.money;
+  document.getElementById("statusDebt").innerText = "负债 " + player.debt;
+  document.getElementById("statusUp").innerText = "上头 " + player.up;
+  document.getElementById("statusHate").innerText = "仇恨 " + player.hate;
+  document.getElementById("statusSkill").innerText = "砂技 " + player.skill;
+  document.getElementById("statusConf").innerText = "自信 " + player.conf;
+  document.getElementById("statusHp").innerText = "体力 " + player.hp;
+}
+function wxPush(side,text){
+  wxLog.push({side,text});
+  const box = document.getElementById("wechatBox");
+  if(wxLog.length===0){
+    box.style.display="none";
+    box.innerHTML="";
+    return;
+  }
+  box.style.display="block";
+  box.innerHTML = wxLog.map(r=>{
+    const cls = r.side==="me" ? "wx-row wx-me" : "wx-row wx-her";
+    return '<div class="'+cls+'"><div class="wx-bubble">'+r.text+'</div></div>';
+  }).join("");
+  box.scrollTop = box.scrollHeight;
+}
+function wxClear(){
+  wxLog = [];
+  wxPush; // 触发隐藏
+  document.getElementById("wechatBox").style.display="none";
+  document.getElementById("wechatBox").innerHTML="";
+}
+
+// ===== 工具 =====
+function pickRandom(filterFn){
+  const arr = filterFn ? dancers.filter(filterFn) : dancers.slice();
+  if(arr.length===0) return null;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function trackDancerUsage(id){
+  if(player.lastDancerId===id){
+    player.sameCount += 1;
+  }else{
+    player.lastDancerId = id;
+    player.sameCount = 1;
+  }
+}
+
+// ===== 开始 & 选身份 =====
+function startGame(){
+  player.chapter = 0;
+  setChapter("序章 夜雨刚停的江南老街");
+  setText("夜雨刚停的江南老街 青石板路还泛着湿气\n街口一块华东砂砂舞厅的粉色霓虹 招牌在巷子深处忽明忽暗\n你站在门口 心里盘算着今晚的预算和胆量");
+  clearChoices();
+  addChoice("一号 退休老头",()=>initRole("oldman"));
+  addChoice("二号 工厂打工人",()=>initRole("worker"));
+  addChoice("三号 失业中年",()=>initRole("mid"));
+  addChoice("四号 富二代",()=>initRole("rich"));
+  addChoice("五号 拆迁户",()=>initRole("landlord"));
+  addChoice("六号 IT 男",()=>initRole("it"));
+  updateStatus();
+}
+function initRole(key){
+  player.roleKey = key;
+  const r = roles[key];
+  player.money = r.money;
+  player.debt = r.debt;
+  player.up = r.up;
+  player.hate = r.hate;
+  player.skill = r.skill;
+  player.conf = r.conf;
+  player.hp = 100;
+  player.favDancer = null;
+  player.lastDancerId = null;
+  player.sameCount = 0;
+  player.hasLoan = false;
+  player.loanTimes = 0;
+  player.reported = false;
+  wxClear();
+  updateStatus();
+  chapter1_gate();
+}
+
+// ===== 第一章 售票口入口 =====
+function chapter1_gate(){
+  player.chapter = 1;
+  setChapter("第一章 售票口和入口");
+  setText("门口的售票员打量了你一眼 说 门票三十 一票到底 出门记得盖章\n\n你扫码付了门票钱 手心微微出汗\n他顺手把盖章器放在一旁 说 出来的时候记得盖 不然要重新买\n\n你走进昏暗的大厅 一股香水味和潮湿地毯的味道扑面而来");
+  clearChoices();
+  addChoice("买一瓶矿泉水压压惊",()=>chapter1_afterWater());
+  addChoice("什么都不点 找个角落坐下",()=>chapter2_poolEdge());
+  addChoice("和吧台小哥聊两句",()=>chapter1_chatBartender());
+}
+function chapter1_afterWater(){
+  player.money -= 5;
+  setText("你在吧台买了一瓶矿泉水 冰凉的瓶身让你稍微冷静\n你慢慢走向舞池边缘 观察里面的世界");
+  updateStatus();
+  clearChoices();
+  addChoice("走近舞池边缘",()=>chapter2_poolEdge());
+}
+function chapter1_chatBartender(){
+  setText("你和吧台小哥闲聊了几句\n他笑着说 多看看少跳 理性消费更安全\n你点点头 端着水走向舞池边缘");
+  clearChoices();
+  addChoice("走近舞池边缘",()=>chapter2_poolEdge());
+}
+
+// ===== 第二章 舞池边缘与首次选人 =====
+function chapter2_poolEdge(){
+  player.chapter = 2;
+  setChapter("第二章 舞池边缘");
+  setText("你靠在栏杆边 看着舞池里的人一遍遍重复 拥抱 放开 转身 再抱住\n你想起砂舞十条注意事项 衣着干净 多看少跳 不要对舞女动情\n不要乱加微信 不要频繁光顾同一个人\n\n灯光在你脸上扫过 你意识到 是时候做一个选择了");
+  clearChoices();
+  addChoice("随机选一个今晚第一首",()=>c2_randomFirst());
+  addChoice("挑一位相对亲民的",()=>c2_listCheap());
+  addChoice("专门找龙女体验",()=>c2_listDragon());
+}
+function c2_randomFirst(){
+  currentDancer = pickRandom(d=>d.greed<80);
+  player.favDancer = currentDancer;
+  player.lastDancerId = currentDancer.id;
+  player.sameCount = 0;
+  chapter2_intro();
+}
+function c2_listCheap(){
+  setChapter("第二章 舞池选人");
+  setText("你决定先找一位态度亲民的\n不求颜值顶级 起码不会太机车");
+  clearChoices();
+  dancers.filter(d=>d.kind==="普通"||d.kind==="热情").slice(0,8).forEach(d=>{
+    addChoice("点 "+d.name,()=>{
+      currentDancer = d;
+      player.favDancer = d;
+      player.lastDancerId = d.id;
+      player.sameCount = 0;
+      chapter2_intro();
+    });
+  });
+}
+function c2_listDragon(){
+  setChapter("第二章 舞池选人");
+  setText("你特意留意戴口罩 安静站在角落的龙女\n她们大多戴着口罩 眼睛清澈 不太说话");
+  clearChoices();
+  dancers.filter(d=>d.kind==="龙女").forEach(d=>{
+    addChoice("点 "+d.name,()=>{
+      currentDancer = d;
+      player.favDancer = d;
+      player.lastDancerId = d.id;
+      player.sameCount = 0;
+      chapter2_intro();
+    });
+  });
+}
+function dancerIntroText(d){
+  let base = "你走向 "+d.name+" 轻声说 可以跳一首吗\n她看了你一眼 点了点头\n你们一起走进舞池深处";
+  if(d.kind==="热情"){
+    base += "\n\n她贴得比你想象中还近 每个转身都会顺势靠在你怀里";
+  }else if(d.kind==="机车"){
+    base += "\n\n她表情有些冷淡 站位略微往外躲 只把手轻轻放在你肩上";
+  }else if(d.kind==="龙女"){
+    base += "\n\n她没有说话 只是点头 然后用手机打了几行字给你看\n屏幕上写着 轻一点 慢慢跳";
+  }
+  return base;
+}
+function chapter2_intro(){
+  player.chapter = 2;
+  const d = currentDancer;
+  setChapter("第二章 舞池第一次拥抱");
+  setText(dancerIntroText(d)+"\n\n音乐响起 你需要决定今晚的第一步");
+  clearChoices();
+  addChoice("规矩抱着慢慢跳",()=>c2_danceNormal());
+  addChoice("试探性抚摸一点",()=>c2_danceTouch());
+  addChoice("抱得更近一点",()=>c2_danceClose());
+}
+
+function paySong(){
+  if(player.money >= 20){
+    player.money -= 20;
+    player.hp -= 4;
+    if(player.hp<0) player.hp = 0;
+    updateStatus();
+    return true;
+  }
+  // 钱不够了 触发网贷或收尾
+  if((player.roleKey==="worker" || player.roleKey==="mid") && !player.hasLoan){
+    chapter5_loanIntro();
+  }else{
+    setChapter("资金见底");
+    setText("你掂了掂口袋 发现已经付不起下一首二十元了\n你被迫停在舞池边缘 盯着里面的灯光发呆");
+    clearChoices();
+    addChoice("离开舞厅 回家冷静",()=>chapter6_ending_rational());
+  }
+  return false;
+}
+
+function c2_danceNormal(){
+  if(!paySong()) return;
+  const d = currentDancer;
+  trackDancerUsage(d.id);
+  player.skill += 2;
+  player.conf += 1;
+  player.up += 5;
+  updateStatus();
+  let t = "你选择规矩地抱着慢慢跳\n右手放在她背上 保持礼貌的距离\n\n歌曲结束 她礼貌地点点头";
+  if(d.kind==="热情"){
+    t += "\n她还顺手帮你整理了一下衣领 笑着说 你跳得比想象中好";
+  }else if(d.kind==="机车"){
+    t += "\n她全程几乎没有抬头看你 只是机械地完成动作";
+  }else if(d.kind==="龙女"){
+    t += "\n她在手机上打字给你看 谢谢 慢一点比什么都重要";
+  }
+  setChapter("第二章 第一首结束");
+  setText(t);
+  clearChoices();
+  addChoice("继续和她跳几首",()=>c3_moreWithSame());
+  addChoice("换一个人试试",()=>c3_changeGirlFrom2());
+  addChoice("先在栏杆边观察",()=>c3_restFrom2());
+}
+
+function c2_danceTouch(){
+  if(!paySong()) return;
+  const d = currentDancer;
+  trackDancerUsage(d.id);
+  player.skill += 1;
+  player.up += 8;
+  updateStatus();
+  let t = "你慢慢地把手往下挪了一点 试探她的反应";
+  if(d.kind==="热情"){
+    t += "\n她轻轻拍了你一下 小声说 别太夸张 就这样挺舒服";
+  }else if(d.kind==="机车"){
+    t += "\n她立刻把你的手推回原位 皱眉说 跳舞就好 别乱来\n你有点尴尬 也有点不爽";
+    player.hate += 5;
+  }else if(d.kind==="龙女"){
+    t += "\n她身子明显紧了一下\n过了一会儿在手机上打字给你看 两个字 规矩";
+  }else{
+    t += "\n她犹豫了一下 没再说什么 只是轻轻往外挪了一点点";
+  }
+  setChapter("第二章 试探之后");
+  setText(t);
+  clearChoices();
+  addChoice("装作没事 继续跳",()=>c3_moreWithSame());
+  addChoice("觉得不合适 换人",()=>c3_changeGirlFrom2());
+  addChoice("心里不舒服 去栏杆边冷静",()=>c3_restFrom2());
+}
+
+function c2_danceClose(){
+  if(!paySong()) return;
+  const d = currentDancer;
+  trackDancerUsage(d.id);
+  player.skill += 2;
+  player.conf += 2;
+  player.up += 12;
+  updateStatus();
+  let t = "你故意把距离拉得更近\n她的呼吸几乎贴在你耳边";
+  if(d.kind==="热情"){
+    t += "\n她笑着说 今天状态不错 再来几首\n你心跳明显加快 上头值也在升高";
+  }else if(d.kind==="机车"){
+    t += "\n她立刻停下脚步 冷冷地说 要这样跳去找别人\n说完把你放回舞池边缘\n你感觉脸上火辣辣的 仇恨值悄悄升高";
+    player.hate += 15;
+  }else if(d.kind==="龙女"){
+    t += "\n她顿了一下 在手机上飞快打字递到你眼前 四个字 太近不行\n你只好尴尬地把距离拉开";
+  }else{
+    t += "\n她没有说话 但也没有躲开 氛围暧昧得有些危险";
+  }
+  setChapter("第二章 氛围升温");
+  setText(t);
+  clearChoices();
+  addChoice("继续和她跳",()=>c3_moreWithSame());
+  addChoice("假装接电话去换人",()=>c3_changeGirlFrom2());
+  addChoice("先去栏杆边透口气",()=>c3_restFrom2());
+}
+
+// ===== 第三章 舞池反复试探 =====
+function c3_moreWithSame(){
+  player.chapter = 3;
+  const times = player.sameCount+1;
+  player.up += 5;
+  if(times>=3) player.up += 5;
+  updateStatus();
+  setChapter("第三章 舞池反复试探");
+  let t = "你决定继续和 "+currentDancer.name+" 跳\n音乐一首接一首 你的注意力开始只剩下她一个人\n";
+  if(times>=3){
+    t += "你已经和她反复跳了 "+times+" 轮\n你隐约意识到 如果总是只点同一个人 很容易上头";
+  }else{
+    t += "你觉得节奏越来越顺 也越来越舍不得换人";
+  }
+  setText(t);
+  clearChoices();
+  addChoice("体验新舞女风格",()=>c3_changeGirlMenu());
+  addChoice("继续和她多跳几首",()=>{player.sameCount=times; c3_moreWithSame();});
+  addChoice("去栏杆边刷手机",()=>c3_restFrom2());
+}
+
+function c3_changeGirlFrom2(){
+  player.chapter = 3;
+  setChapter("第三章 舞池反复试探");
+  setText("你深呼吸一口气 决定不要只盯着一个人\n你重新在舞池边挑人 很快又和一位新的舞女跳上了砂舞");
+  clearChoices();
+  addChoice("随机体验新舞女",()=>c3_randomNew());
+  addChoice("从名单里指定",()=>c3_changeGirlMenu());
+}
+
+function c3_randomNew(){
+  currentDancer = pickRandom(d=>d.id!==player.lastDancerId);
+  player.lastDancerId = currentDancer.id;
+  player.sameCount = 0;
+  player.favDancer = currentDancer;
+  chapter2_intro();
+}
+
+function c3_changeGirlMenu(){
+  setChapter("第三章 重新点人");
+  setText("你靠在栏杆边 盯着舞池里的身影\n你可以随便点一个 也可以按类型挑");
+  clearChoices();
+  addChoice("随机点一个顺眼的",()=>c3_randomNew());
+  addChoice("点亲民一点的",()=>c3_listType("普通"));
+  addChoice("点热情一点的",()=>c3_listType("热情"));
+  addChoice("点机车女试试",()=>c3_listType("机车"));
+  addChoice("再体验一次龙女",()=>c3_listType("龙女"));
+}
+function c3_listType(kind){
+  setChapter("第三章 选择 "+kind+" 舞女");
+  let tip = "你在灯光下仔细打量";
+  if(kind==="机车"){
+    tip += "\n你特意挑了几位脸冷冷的机车女 心想看看她们到底有多会套路";
+  }else if(kind==="龙女"){
+    tip += "\n你再次把目光锁定在几位戴口罩的龙女身上 无声世界总有种危险的吸引力";
+  }
+  setText(tip);
+  clearChoices();
+  dancers.filter(d=>d.kind===kind).forEach(d=>{
+    addChoice("点 "+d.name,()=>{
+      currentDancer = d;
+      player.lastDancerId = d.id;
+      player.sameCount = 0;
+      player.favDancer = d;
+      chapter2_intro();
+    });
+  });
+}
+
+function c3_restFrom2(){
+  player.chapter = 3;
+  setChapter("第三章 栏杆边的冷静");
+  setText("你退到栏杆边 看着舞池里的人一遍遍重复\n抱住 放开 转身 再抱住\n汗水 混着香水和酒精的味道\n你突然有点恍惚");
+  clearChoices();
+  addChoice("刷一会儿手机",()=>chapter4_wechatIntro());
+  addChoice("继续回舞池点人",()=>c3_changeGirlMenu());
+}
+
+// ===== 第四章 微信错觉线 =====
+function chapter4_wechatIntro(){
+  player.chapter = 4;
+  wxClear();
+  setChapter("第四章 手机里的暧昧幻觉");
+  setText("你靠在角落刷视频 很快就刷到几个关于砂舞骗钱的故事\n有人卖房 有人网贷 有人被拉黑\n你有点嗤之以鼻 又有点心虚\n\n这时 "+(player.favDancer?player.favDancer.name:"一位舞女")+" 发来好友申请");
+  clearChoices();
+  addChoice("通过好友 试着聊聊",()=>chapter4_wechatChat());
+  addChoice("克制自己 不加",()=>chapter4_noWechat());
+}
+function wxScene_basic(){
+  const girl = player.favDancer ? player.favDancer.name : "舞女";
+  wxClear();
+  wxPush("her", girl+" 加你为好友");
+  wxPush("her", "在吗");
+  wxPush("me", "在 刚到家");
+  wxPush("her", "你今天跳得挺好");
+}
+function chapter4_wechatChat(){
+  const girl = player.favDancer ? player.favDancer.name : "舞女";
+  setChapter("第四章 夜深的微信");
+  setText("你点了通过 很快就收到了几条消息\n聊天框一点点亮起来 你感到一种久违的被需要\n\n你要怎么回应");
+  wxScene_basic();
+  clearChoices();
+  addChoice("每天嘘寒问暖",()=>{
+    player.up += 20;
+    updateStatus();
+    wxPush("me","你今天辛苦了 回去记得早点休息");
+    wxPush("her","哈哈 谢谢啦");
+    wxPush("her", "下次来记得找我");
+    setText("你开始习惯睡前和她聊几句\n哪怕内容很普通 你也觉得自己好像被某个人惦记着");
+    clearChoices();
+    addChoice("偶尔发点小红包",()=>chapter4_redPacket());
+    addChoice("控制频率 只简单回应",()=>chapter4_control());
+  });
+  addChoice("偶尔回两句 不主动找她",()=>chapter4_control());
+}
+function chapter4_redPacket(){
+  player.money -= 50;
+  player.up += 15;
+  updateStatus();
+  const girl = player.favDancer ? player.favDancer.name : "她";
+  wxPush("me","给你发个小红包 猛猛加油");
+  wxPush("her","哇 谢谢哥哥");
+  wxPush("her","改天请你多跳几首");
+  setChapter("第四章 红包和错觉");
+  setText("你开始习惯隔三差五给她发红包\n金额不算大 但加在一起也不少\n她偶尔发几张自拍 你却当成了独家福利");
+  clearChoices();
+  addChoice("继续这样 晚点再说",()=>chapter5_edge());
+  addChoice("意识不对劲 尝试慢慢断联",()=>chapter5_tryExit());
+}
+function chapter4_control(){
+  player.up += 5;
+  updateStatus();
+  setChapter("第四章 克制下的暧昧");
+  setText("你刻意控制自己 很少主动找她\n但是只要她发来一条在吗 你还是会立刻回复\n那种被需要的感觉 让你舍不得删掉她");
+  clearChoices();
+  addChoice("继续吊着这段关系",()=>chapter5_edge());
+  addChoice("趁早删掉联系方式",()=>chapter5_tryExit());
+}
+function chapter4_noWechat(){
+  setChapter("第四章 擦肩而过");
+  setText("你看着好友申请犹豫了很久\n最终还是点了拒绝\n你告诉自己 舞厅是舞厅 现实是现实\n至少今晚 你做了一个理智的选择");
+  clearChoices();
+  addChoice("离开舞厅 回家睡觉",()=>chapter6_ending_rational());
+}
+
+// ===== 第五章 上头边缘与网贷 =====
+function chapter5_edge(){
+  player.chapter = 5;
+  setChapter("第五章 上头边缘");
+  setText("时间一天天过去 你去舞厅的频率越来越高\n每次都先点 "+(player.favDancer?player.favDancer.name:"那位熟悉的舞女")+" 跳几首\n聊天记录越积越多 转账记录也越来越长\n\n你的金钱和精力被一点点耗尽 但你却觉得停不下来");
+  clearChoices();
+  addChoice("继续冲 动不去算账",()=>chapter5_keepBurning());
+  addChoice("掏出记账软件算一算",()=>chapter5_calc());
+}
+
+function chapter5_calc(){
+  setChapter("第五章 账本上的真相");
+  setText("你把最近几个月的舞费 红包 坐台钱一笔笔加起来\n数字把你自己都吓了一跳\n你开始分不清 自己是在跳舞 还是在被人跳着钱包");
+  clearChoices();
+  addChoice("假装没看见 继续玩",()=>chapter5_keepBurning());
+  addChoice("决定减少次数 尝试慢慢淡出",()=>chapter5_tryExit());
+}
+
+function chapter5_keepBurning(){
+  player.up += 20;
+  if(player.up>100) player.up = 100;
+  updateStatus();
+  setChapter("第五章 再往前一步");
+  setText("你告诉自己 再玩一阵子就收手\n于是又一次走进华东砂砂舞厅\n灯光刚亮起来 你已经习惯性在找她的身影");
+  clearChoices();
+  addChoice("继续按以前的方式跳",()=>chapter5_moneyPressure());
+  addChoice("直接约她坐台聊天",()=>chapter5_seatChoice());
+}
+
+function chapter5_moneyPressure(){
+  setChapter("第五章 钱不够的夜晚");
+  setText("你和她连着跳了好几首\n当你伸手去掏钱时 才发现钱包已经快见底\n她看了你一眼 在手机上打字 或轻声说 没事 再跳两首吧\n你知道 那意味着你要想办法弄来更多钱");
+  clearChoices();
+  addChoice("咬牙再转一点过去",()=>{
+    player.money -= 60;
+    if(player.money<0) player.money = 0;
+    player.up += 10;
+    updateStatus();
+    chapter5_loanIntro();
+  });
+  addChoice("直接跟她说没钱了",()=>{
+    player.hate += 10;
+    updateStatus();
+    setText("你坦白说今晚预算不够\n她脸色微微一变 说 那下次再玩吧 然后去找了新的客人\n你心里有一点失落 也有一点说不出的别扭");
+    clearChoices();
+    addChoice("从此慢慢淡出",()=>chapter5_tryExit());
+    addChoice("越想越不甘心",()=>chapter5_blackHeart());
+  });
+}
+
+function chapter5_seatChoice(){
+  setChapter("第五章 坐台的诱惑");
+  setText("她提议要不要坐一会儿\n一小时三百 你可以更近距离地聊天\n你看着手机里的余额 犹豫不决");
+  clearChoices();
+  addChoice("咬牙坐一小时",()=>{
+    if(player.money>=300){
+      player.money -= 300;
+    }else{
+      player.debt += 300-player.money;
+      player.money = 0;
+      player.hasLoan = true;
+    }
+    player.up += 25;
+    updateStatus();
+    chapter5_afterSeat();
+  });
+  addChoice("拒绝坐台 只跳舞",()=>chapter5_moneyPressure());
+}
+
+function chapter5_afterSeat(){
+  setChapter("第五章 坐台之后");
+  player.up += 10;
+  updateStatus();
+  setText("一小时很快过去 你几乎没心思听她说了什么\n你只记得那种被紧紧贴着的错觉\n离开卡座的时候 你突然意识到 自己已经跨过了一道线");
+  clearChoices();
+  addChoice("继续上头 再玩一阵子",()=>chapter5_loanIntro());
+  addChoice("被吓清醒 尝试抽身",()=>chapter5_tryExit());
+}
+
+function chapter5_loanIntro(){
+  player.chapter = 5;
+  const canLoan = (player.roleKey==="worker" || player.roleKey==="mid");
+  setChapter("第五章 网贷的边缘");
+  if(!canLoan){
+    setText("你打开银行卡余额 余额显示近乎清零\n你想过网贷 但你知道以你的身份 不值得为几次舞费背一身债\n\n你站在舞厅门口 吸了一口带着潮气的空气");
+    clearChoices();
+    addChoice("离开舞厅 回家冷静",()=>chapter6_ending_rational());
+    return;
+  }
+  setText("你反复刷新网银 余额只剩下可怜的一点\n你想到手机里那些网贷广告 标语写着 审核快 秒下款\n\n你很清楚 只要点一下 同意协议 你的生活就会被分成之前和之后两段");
+  clearChoices();
+  addChoice("申请一笔一万的网贷",()=>chapter5_takeLoan(10000));
+  addChoice("只借五千试试水",()=>chapter5_takeLoan(5000));
+  addChoice("强行克制 不借",()=>chapter5_tryExit());
+}
+
+function chapter5_takeLoan(amount){
+  player.hasLoan = true;
+  player.loanTimes += 1;
+  player.debt += amount;
+  player.money += amount;
+  player.up += 30;
+  updateStatus();
+  setChapter("第五章 债务正式开始");
+  setText("你的手机震动了一下\n短信提示 额度 "+amount+" 已到账\n\n你盯着那串数字 看了很久\n然后鬼使神差地 打车回了华东砂砂舞厅");
+  clearChoices();
+  addChoice("继续去找那位熟悉的舞女",()=>chapter5_afterLoanPlay());
+}
+
+function chapter5_afterLoanPlay(){
+  setChapter("第五章 借钱后的重返舞池");
+  setText("你带着刚到手的贷款 又一次推开舞厅厚重的门\n灯光 音乐 香水味 一切都和以前一样\n唯一不一样的是 你知道这些钱将要还很久");
+  clearChoices();
+  addChoice("疯狂点她跳很多首",()=>chapter5_burnAfterLoan());
+  addChoice("先观察一下 再决定点谁",()=>c3_changeGirlMenu());
+}
+
+function chapter5_burnAfterLoan(){
+  player.money -= 400;
+  if(player.money<0){player.debt += -player.money; player.money=0;}
+  player.up += 30;
+  player.hp -= 10;
+  updateStatus();
+  setChapter("第五章 上头到失控");
+  setText("那一晚你几乎把所有时间都砸在了舞池里\n你已经记不清跳了多少首 只记得手机支付的提示音一遍遍响起\n\n等你回过神来 余额再次见底");
+  clearChoices();
+  addChoice("继续和她保持联络",()=>chapter5_crashAfterLoan());
+  addChoice("突然清醒 想办法停下",()=>chapter5_tryExit());
+}
+
+function chapter5_crashAfterLoan(){
+  player.hate += 30;
+  player.up += 10;
+  updateStatus();
+  setChapter("第五章 情绪开始反转");
+  setText("贷款要还 催收电话不时打来\n你再想找她聊天时 却发现回复变得越来越慢\n曾经那些甜言蜜语 此刻都像是脚本\n\n你心里的滋味开始从依赖 慢慢变成怨气");
+  clearChoices();
+  addChoice("越想越气 觉得舞女和舞厅都是骗子",()=>chapter5_blackHeart());
+  addChoice("承认是自己上头 太丢人了不敢说",()=>chapter5_innerBlame());
+}
+
+function chapter5_blackHeart(){
+  player.hate += 30;
+  updateStatus();
+  setChapter("第五章 仇恨值累积");
+  setText("你开始在心里反复回放所有细节\n是谁说 你让我觉得很安心\n是谁说 你不来我就休息\n是谁一次次在你说没钱时说 没事 下次补\n\n越想越不对劲 越想越觉得自己被当成提款机");
+  clearChoices();
+  addChoice("在网上匿名发帖控诉舞厅",()=>chapter6_reportLine());
+  addChoice("什么都不做 把仇恨憋在心里",()=>chapter6_ending_debt());
+}
+
+function chapter5_innerBlame(){
+  setChapter("第五章 自责与沉默");
+  setText("你一边接催收电话 一边刷她的朋友圈\n你不敢告诉任何人这笔债是怎么来的\n于是所有的羞耻和后悔都闷在自己心里");
+  clearChoices();
+  addChoice("终于崩溃 想找个出口",()=>chapter5_blackHeart());
+  addChoice("咬牙还钱 努力回归正常生活",()=>chapter6_ending_rational());
+}
+
+function chapter5_tryExit(){
+  setChapter("第五章 试图抽身");
+  setText("你开始刻意减少去舞厅的次数\n微信也不再主动找她\n有时候看见她发的动态 还是会心软点进去\n但你知道 自己已经走在离开的路上");
+  clearChoices();
+  addChoice("坚持到底 慢慢回到普通生活",()=>chapter6_ending_rational());
+  addChoice("某个孤独的夜晚还是又去了舞厅",()=>chapter5_keepBurning());
+}
+
+// ===== 第六章 结局 =====
+function chapter6_ending_rational(){
+  player.chapter = 6;
+  setChapter("第六章 留一点体面给自己");
+  setText("你最终选择了离开华东砂砂舞厅\n偶尔路过那条江南老街 看到招牌还在闪 你会停下脚步\n\n你知道 那个地方差点吞掉你的钱包和情绪\n但至少在真正失控之前 你按下了刹车");
+  clearChoices();
+  addChoice("重新来一局 选择另一种人生",()=>startGame());
+}
+
+function chapter6_ending_debt(){
+  player.chapter = 6;
+  setChapter("第六章 债务的尾巴");
+  setText("你没有举报任何人 也没有再去找她\n你只是默默还着每个月的分期\n\n偶尔半夜惊醒 会想起那几晚灯光晃眼的场景\n你再也分不清 自己到底是恨舞厅 恨舞女 还是恨当初那个上头到失控的自己");
+  clearChoices();
+  addChoice("重新来一局 也许选别的选项",()=>startGame());
+}
+
+function chapter6_reportLine(){
+  player.chapter = 6;
+  player.reported = true;
+  setChapter("第六章 举报与反噬");
+  setText("你终于受不了这笔债和这份耻辱\n你开始在网上匿名发帖 揭露舞厅里的一切\n讲曲费 讲坐台 讲网贷和甜言蜜语\n\n帖子很快被转发 也引来一堆骂战\n有人说你是被割韭菜不服气 有人说你活该");
+  clearChoices();
+  addChoice("继续深挖 甚至打举报电话",()=>chapter6_callPolice());
+  addChoice("删帖装作什么都没发生",()=>chapter6_ending_debt());
+}
+
+function chapter6_callPolice(){
+  player.hate += 20;
+  updateStatus();
+  setChapter("第六章 举报舞厅的那一晚");
+  setText("你鼓起勇气打了举报电话\n简单描述了舞厅里的情况\n不久之后 舞厅被临时查封\n\n朋友圈里有人转发消息 感叹风声又紧了\n也有人在群里骂 举报狗 真扫兴");
+  clearChoices();
+  addChoice("你开始被各种人私信谩骂",()=>chapter6_afterReport());
+}
+
+function chapter6_afterReport(){
+  setChapter("第六章 孤独的清醒者");
+  setText("你被骂得狗血淋头 有人说你毁了大家的开心\n也有极少数陌生人悄悄给你点了个赞\n\n舞厅可能只是暂时关一阵\n但你知道 自己再也不会回去了\n那段记忆会一直提醒你\n有些快乐 是要用一生偿还的");
+  clearChoices();
+  addChoice("带着这份清醒重新开始",()=>chapter6_ending_rational());
+}
+
+// ===== 启动 =====
+startGame();
+</script>
+</body>
+</html>

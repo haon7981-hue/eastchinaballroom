@@ -1,199 +1,670 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>江浙沪舞厅跳舞计时器</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>江浙沪舞讯 · 今夜绽放</title>
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; height: 100vh; display: flex; flex-direction: column; }
-    .container { flex: 1; display: flex; flex-direction: column; max-width: 100%; background: white; }
-    .header { background: black; color: white; text-align: center; padding: 18px; font-size: 24px; position: relative; flex-shrink: 0; }
-    .fullscreen-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); color: white; border: none; padding: 10px; border-radius: 50%; font-size: 24px; cursor: pointer; }
-    .section { padding: 20px; flex-shrink: 0; }
-    .mode-switch { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
-    .mode-btn { padding: 14px 35px; border-radius: 30px; background: #eee; position: relative; font-size: 19px; min-width: 120px; text-align: center; }
-    .mode-btn.active { background: #a5dee5; }
-    .mode-btn input { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; left: 0; top: 0; }
-    .mode-btn .check { position: absolute; left: 18px; top: 12px; color: #00bfa5; font-weight: bold; font-size: 20px; display: none; }
-    .mode-btn.active .check { display: block; }
-    .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 19px; }
-    .input-group input { width: 180px; padding: 16px; border: 1px solid #ddd; border-radius: 12px; text-align: center; font-size: 22px; }
-    .info { flex: 1; padding: 10px 20px; display: flex; flex-direction: column; justify-content: center; font-size: 19px; }
-    .info > div { display: flex; justify-content: space-between; margin-bottom: 18px; }
-    .info span:first-child { color: #333; }
-    .highlight { color: #00bfa5 !important; font-weight: bold; font-size: 42px !important; text-align: right; }
-    .status { text-align: center; padding: 20px; font-size: 22px; color: #00bfa5; font-weight: bold; flex-shrink: 0; }
-    .buttons { display: flex; justify-content: space-around; padding: 25px 20px; background: #f9f9f9; flex-shrink: 0; }
-    .btn { padding: 20px 45px; border-radius: 40px; border: none; font-size: 22px; cursor: pointer; min-width: 120px; }
-    .btn-start { background: #00bfa5; color: white; }
-    .btn-end, .btn-reset { background: #eee; color: #666; }
+    :root {
+      --bg-start: #120024;  /* 深紫夜幕 */
+      --bg-end: #3a0066;    /* 渐变到霓虹紫 */
+      --card-bg: rgba(255, 46, 138, 0.12);  /* 粉红光晕 */
+      --accent: #ff2e8a;    /* 热粉霓虹 */
+      --text: #f8e1ff;      /* 柔和白紫 */
+      --subtext: #d4aaff;   /* 浅紫提示 */
+      --highlight: #ff4d9e; /* 高亮粉 */
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* 轻微霓虹粒子背景（舞厅氛围） */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle, rgba(255,46,138,0.05) 0%, transparent 70%);
+      opacity: 0.6;
+      pointer-events: none;
+      animation: glow 15s infinite alternate;
+    }
+
+    @keyframes glow {
+      0% { opacity: 0.4; transform: scale(1); }
+      100% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .header {
+      background: rgba(18, 0, 36, 0.75);
+      backdrop-filter: blur(15px);
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,46,138,0.2);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2em;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-align: center;
+      background: linear-gradient(90deg, #ff8ed9, #d5aaff, #ff8ed9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 3px 12px rgba(255, 46, 138, 0.4);
+      animation: neon-flicker 2s infinite alternate;
+    }
+
+    @keyframes neon-flicker {
+      0% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+
+    .date {
+      text-align: center;
+      color: var(--subtext);
+      font-size: 1em;
+      margin-top: 8px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 4px rgba(255,46,138,0.2);
+    }
+
+    .search-container {
+      display: flex;
+      gap: 14px;
+      margin: 18px 0 10px;
+    }
+
+    select, input {
+      padding: 14px 18px;
+      border-radius: 20px;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 1.15em;
+      font-weight: 500;
+      flex: 1;
+      transition: all 0.3s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      background: rgba(255,46,138,0.18);
+      box-shadow: 0 0 8px rgba(255,46,138,0.6);
+    }
+
+    select option {
+      background: var(--bg-start);
+      color: var(--text);
+      font-size: 1.15em;
+      padding: 14px;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.45);
+    }
+
+    .city-section {
+      display: none;
+      padding: 14px 20px 50px;
+    }
+
+    .city-section.active {
+      display: block;
+    }
+
+    .pinned {
+      background: linear-gradient(145deg, rgba(255,46,138,0.22), rgba(156,39,176,0.22));
+      border-radius: 24px;
+      padding: 20px;
+      margin: 24px 0 28px;
+      border: 1px solid rgba(255,46,138,0.35);
+      box-shadow: 0 10px 35px rgba(255,46,138,0.2);
+      animation: pulse 3s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 10px 35px rgba(255,46,138,0.15); }
+      100% { box-shadow: 0 10px 35px rgba(255,46,138,0.3); }
+    }
+
+    .pinned-title {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: var(--highlight);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 2px 6px rgba(255,46,138,0.3);
+    }
+
+    .pinned-title::before {
+      content: "🌟";
+      font-size: 1.4em;
+      animation: spin 4s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .hall-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .hall-list { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .hall-list { grid-template-columns: 1fr; }
+    }
+
+    .hall-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255,46,138,0.15);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hall-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(255,46,138,0.25);
+      background: rgba(255,46,138,0.18);
+    }
+
+    .hall-name {
+      font-size: 1.15em;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .highlight {
+      color: var(--highlight);
+      font-weight: 700;
+    }
+
+    .nav-link {
+      color: var(--subtext);
+      text-decoration: none;
+      font-size: 0.95em;
+      padding: 8px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      transition: background 0.3s;
+    }
+
+    .nav-link:hover {
+      background: rgba(255,46,138,0.25);
+    }
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .city-btn {
+      background: rgba(255,46,138,0.12);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: 1px solid rgba(255,46,138,0.2);
+    }
+
+    .city-btn:hover {
+      background: rgba(255,46,138,0.25);
+      transform: scale(1.05);
+    }
+
+    .city-btn.active {
+      background: rgba(255,46,138,0.35);
+      box-shadow: 0 0 15px rgba(255,46,138,0.4);
+    }
+
+    .no-result {
+      text-align: center;
+      color: var(--subtext);
+      padding: 100px 20px;
+      font-size: 1.15em;
+      opacity: 0.75;
+    }
+
+    .tips {
+      text-align: center;
+      color: rgba(212,170,255,0.65);
+      font-size: 0.88em;
+      padding: 60px 20px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) { .city-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .city-grid { grid-template-columns: 1fr; } .header { padding: 16px 18px; } h1 { font-size: 1.85em; } .search-container { flex-direction: column; gap: 12px; } .hall-card { flex-direction: column; gap: 10px; } }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      江浙沪舞厅跳舞计时器
-      <button class="fullscreen-btn" id="fullscreen-btn">⛶</button>
-    </div>
 
-    <div class="section">
-      <div class="mode-switch">
-        <div class="mode-btn active">
-          <input type="radio" name="mode" id="qu" checked>
-          <span class="check">✓</span> 按曲
-        </div>
-        <div class="mode-btn">
-          <input type="radio" name="mode" id="min">
-          <span class="check">✓</span> 按分钟
-        </div>
-      </div>
+<div class="header">
+  <h1>江浙沪舞讯</h1>
+  <div class="date">2026年1月16日（星期五）</div>
 
-      <div id="qu-fields">
-        <div class="input-group"><span>每曲价格：</span><div><input type="number" id="price-qu" value="20"> 元/曲</div></div>
-        <div class="input-group"><span>每曲时长：</span><div><input type="number" id="time-qu" value="4"> 分钟</div></div>
-      </div>
-
-      <div id="min-fields" style="display:none;">
-        <div class="input-group"><span>每分钟价格：</span><div><input type="number" id="price-min" value="5"> 元/分钟</div></div>
-        <div class="input-group"><span>最少跳：</span><div><input type="number" id="min-time" value="4"> 分钟</div></div>
-      </div>
-    </div>
-
-    <div class="info">
-      <div><span>当前时间：</span><span id="current-time"></span></div>
-      <div><span>开始时间：</span><span id="start-time">--</span></div>
-      <div><span>结束时间：</span><span id="end-time">--</span></div>
-      <div><span>总共时间：</span><span id="total-time" class="highlight">--</span></div>
-      <div id="total-qu-line"><span>总共曲数：</span><span id="total-qu" class="highlight">--</span></div>
-      <div><span>总共花费：</span><span id="total-cost" class="highlight">--</span></div>
-    </div>
-
-    <div class="status">计费状态：<span id="status-text">未计费</span></div>
-
-    <div class="buttons">
-      <button class="btn btn-start" id="btn-start">开始</button>
-      <button class="btn btn-end" id="btn-end">结束</button>
-      <button class="btn btn-reset" id="btn-reset">复位</button>
-    </div>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="搜索舞厅...">
   </div>
+</div>
 
-  <script>
-    const noSleep = new NoSleep();
-    let startTime = null;
-    let timer = null;
-    let isRunning = false;
+<!-- 城市列表菜单 -->
+<div class="city-grid">
+  <div class="city-btn active" data-city="shanghai">上海</div>
+  <div class="city-btn" data-city="danyang">丹阳</div>
+  <div class="city-btn" data-city="lishui">丽水</div>
+  <div class="city-btn" data-city="yiwu">义乌</div>
+  <div class="city-btn" data-city="yizheng">仪征</div>
+  <div class="city-btn" data-city="nanjing">南京</div>
+  <div class="city-btn" data-city="nantong">南通</div>
+  <div class="city-btn" data-city="jurong">句容</div>
+  <div class="city-btn" data-city="taizhou_city">台州</div>
+  <div class="city-btn" data-city="jiaxing">嘉兴</div>
+  <div class="city-btn" data-city="ningbo">宁波</div>
+  <div class="city-btn" data-city="yixing">宜兴</div>
+  <div class="city-btn" data-city="suqian">宿迁</div>
+  <div class="city-btn" data-city="changzhou">常州</div>
+  <div class="city-btn" data-city="yangzhou">扬州</div>
+  <div class="city-btn" data-city="kunshan">昆山</div>
+  <div class="city-btn" data-city="hangzhou">杭州</div>
+  <div class="city-btn" data-city="tongxiang">桐乡</div>
+  <div class="city-btn" data-city="jiangyin">江阴</div>
+  <div class="city-btn" data-city="taizhou">泰州</div>
+  <div class="city-btn" data-city="haining">海宁</div>
+  <div class="city-btn" data-city="wenzhou">温州</div>
+  <div class="city-btn" data-city="huzhou">湖州</div>
+  <div class="city-btn" data-city="yancheng">盐城</div>
+  <div class="city-btn" data-city="shaoxing">绍兴</div>
+  <div class="city-btn" data-city="quzhou">衢州</div>
+  <div class="city-btn" data-city="jinhua">金华</div>
+  <div class="city-btn" data-city="suzhou">苏州</div>
+</div>
 
-    document.getElementById('fullscreen-btn').addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-        noSleep.enable();
+<div id="shanghai" class="city-section active">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">夜来香</span> <a href="https://surl.amap.com/yQUBQAxg1FO" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">红太阳</span> <a href="https://surl.amap.com/r5UUWDHi4v3" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">7号俱乐部</span> <a href="https://surl.amap.com/1gHsTI6F85aA" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">乐轩</span> <a href="https://surl.amap.com/9g18GtPW7Em" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">南上海</span> <a href="https://surl.amap.com/1DUTP9njmc0f" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">漾迪斯科</span> <a href="https://surl.amap.com/4ytlaCMp8cfm" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="danyang" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">芭黎人</span> <a href="https://surl.amap.com/RIqTB3h4Jf" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">鑫源</span> <a href="https://surl.amap.com/r6YBudHR8Xx" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="lishui" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">蓝傲</span> <a href="https://surl.amap.com/fs8q8jnIf0W" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">处州夜色</span> <a href="https://surl.amap.com/fwAiiatzb0z" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="yiwu" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">梦莎</span> <a href="https://surl.amap.com/Yu1yqFPk621" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">港城</span> <a href="https://surl.amap.com/6SM38ynO15cOh" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="yizheng" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">浪莎</span> <a href="https://surl.amap.com/gI30CxLnd5Y" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">盐都</span> <a href="https://surl.amap.com/S0vxiZ1i7mZ" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="nanjing" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">散怀</span> <a href="https://surl.amap.com/uhZ8Os580RJ" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">相逢</span> <a href="https://surl.amap.com/g4SBaypT3Z5" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">FOX</span> <a href="https://surl.amap.com/1aU5bU970K7" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">夜芭蕾</span> <a href="https://surl.amap.com/9QGuxCJ160jA" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">红苹果</span> <a href="https://surl.amap.com/pWfwRCJDfTS" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="nantong" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">寻梦缘</span> <a href="https://surl.amap.com/29RgvGI310V" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">抖舞</span> <a href="https://surl.amap.com/Vdu1qB1o5gH" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">华冠</span> <a href="https://surl.amap.com/1bLiHwim8um" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">卢米</span> <a href="https://surl.amap.com/r0q597P76E3" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">启东后海</span> <a href="https://surl.amap.com/6UBFDYFC1salo" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">启东嗨恋</span> <a href="https://surl.amap.com/jf17SBK157dn" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">如皋外滩</span> <a href="https://surl.amap.com/UFOwqB151lI" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">星鼎</span> <a href="https://surl.amap.com/1vn0lDKl1Agpq" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">海门魅莎</span> <a href="https://surl.amap.com/h1Frn5bfcsG" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">自由空间</span> <a href="https://surl.amap.com/fm5PpWV1c4NZ" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">蒙纳戈</span> <a href="https://surl.amap.com/2mZuySB5i0jU" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">通州玛莎嗨嗨</span> <a href="https://surl.amap.com/VfuIXry6nI" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="jurong" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">温格</span> <a href="https://surl.amap.com/qcH9Wwl1xfO0" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">宝华艾莎</span> <a href="https://surl.amap.com/r4Jo6xr1p2JQ" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">超唱</span> <a href="https://surl.amap.com/qdIyEZL115kg" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="taizhou_city" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">夜江楠</span> <a href="https://surl.amap.com/hniTCUt1i5pD" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="jiaxing" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">永信</span> <a href="https://surl.amap.com/1us5NFtLU3WB" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">紫城</span> <a href="https://surl.amap.com/FXIhgg1leut" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="ningbo" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">乐8</span> <a href="https://surl.amap.com/gfd5zDz1m9v7" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">新节奏</span> <a href="https://surl.amap.com/1nk3kliX44F" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">丰成</span> <a href="https://surl.amap.com/ghWabAR167ut" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">佰乐们</span> <a href="https://surl.amap.com/125yPB61y9Vt" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">康都</span> <a href="https://surl.amap.com/sSD7f7P12eNh" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">申财梦</span> <a href="https://surl.amap.com/hE1UD4Nicti" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">茹梦</span> <a href="https://surl.amap.com/hDQFGSx1igSz" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="yixing" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">蓝迪</span> <a href="https://surl.amap.com/7OWtqsUP17r" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">蓝调</span> <a href="https://surl.amap.com/dFKXitv1Vj" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="suqian" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">新世界</span> <a href="https://surl.amap.com/hjGE6bb1f0Cs" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="changzhou" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">恒鑫</span> <a href="https://surl.amap.com/2mUS1rMvp3OL" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">溧阳蓝梦</span> <a href="https://surl.amap.com/2fT8BaY51r9nA" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">玖松</span> <a href="https://surl.amap.com/c3vuKN2n2cQ" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="yangzhou" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">银河</span> <a href="https://surl.amap.com/FoPia81dcq5" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">顺达</span> <a href="https://surl.amap.com/zLfQ86Odpd" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">星眺</span> <a href="https://surl.amap.com/gyqV7dL26M9" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="kunshan" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">海尚</span> <a href="https://surl.amap.com/6sH4e1n1h3V6" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="hangzhou" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">临安魅舞</span> <a href="https://surl.amap.com/gDsWLdrgaL4" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">蓝玉</span> <a href="https://surl.amap.com/3mncJ6iJOaTH" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">圆梦</span> <a href="https://surl.amap.com/76w84cO1z6xK" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">塘果</span> <a href="https://surl.amap.com/9y1HxSF3ts" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">富阳群众</span> <a href="https://surl.amap.com/8wieCeN1d4hX" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">富阳韵境</span> <a href="https://surl.amap.com/WREHLA1rgVp" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">新鑫</span> <a href="https://surl.amap.com/3gy21RI91ncLO" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">星际线</span> <a href="https://surl.amap.com/1qY9mIA51hfU7" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">柳如烟</span> <a href="https://surl.amap.com/f5OU86d1m4Wr" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">桐庐梦轩</span> <a href="https://surl.amap.com/QhzdHvH2Eu" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">邻小乐</span> <a href="https://surl.amap.com/1DaPwJ71r4rB" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="tongxiang" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">银河</span> <a href="https://surl.amap.com/XcCt5U1h5Gi" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">乐地</span> <a href="https://surl.amap.com/PWp4Wx1mcS6" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">悦至尚</span> <a href="https://surl.amap.com/ZHprJSFe2vb" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">梦可迪</span> <a href="https://surl.amap.com/6QzfcfOQ1oaPR" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">红宝石</span> <a href="https://surl.amap.com/6QSfUd9Gkcdf" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">缘梦</span> <a href="https://surl.amap.com/9oVE4TI1jb80" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="jiangyin" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">北国茶座</span> <a href="https://surl.amap.com/FZYlmglveVX" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">猎人</span> <a href="https://surl.amap.com/guNK6uJy6cD" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">超级猴子</span> <a href="https://surl.amap.com/haHThGB1xf5x" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="taizhou" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">寻酒作乐</span> <a href="https://surl.amap.com/6uAEygW19glv" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">简爱</span> <a href="https://surl.amap.com/1x9GWuzvJ9kA" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="haining" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">AJ</span> <a href="https://surl.amap.com/gceZtl7Rgyo" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">潮宁汇</span> <a href="https://surl.amap.com/8j5VuIl1gbHf" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="wenzhou" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">浪花</span> <a href="https://surl.amap.com/UwZPY97gxW" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">龙湾浪花</span> <a href="https://surl.amap.com/hqXo2j31n6pP" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="huzhou" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">长兴小酒馆</span> <a href="https://surl.amap.com/4wJ2EoPT1odvy" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="yancheng" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">蓝堡</span> <a href="https://surl.amap.com/6aXuti2E152r5" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">魅都</span> <a href="https://surl.amap.com/3qdEqQk516eoZ" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">幕色</span> <a href="https://surl.amap.com/hJM3xJ3fwY" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">星花</span> <a href="https://surl.amap.com/6ud3Rui63m" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="shaoxing" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">嘉华</span> <a href="https://surl.amap.com/386HGXZzd74S" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">新正</span> <a href="https://surl.amap.com/hiwZ3Lf1e4as" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">邂逅</span> <a href="https://surl.amap.com/1HpkeQpTu9Te" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">芳华</span> <a href="https://surl.amap.com/U2KBF31h54l" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">蓝堡</span> <a href="https://surl.amap.com/TYlZZPc70s" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">逍遥</span> <a href="https://surl.amap.com/38Z0Y4wB1pebJ" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="quzhou" class="city-section">
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">摇一摇</span> <a href="https://surl.amap.com/11ErgIUpl0MT" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="jinhua" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">漫鹿</span> <a href="https://surl.amap.com/14kXSW5H9glP" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">澜莎</span> <a href="https://surl.amap.com/WnKAnRT124fg" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">燕尾厅</span> <a href="https://surl.amap.com/YLqZ0ilk8rE" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">百舞门</span> <a href="https://surl.amap.com/Y0CmW0N1laOf" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">金莎</span> <a href="https://surl.amap.com/WruMvHz109CV" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div id="suzhou" class="city-section">
+  <div class="pinned">
+    <div class="pinned-title">今晚最热</div>
+    <div class="hall-card"><span class="hall-name highlight">歌友会</span> <a href="https://t.me/suxiblackroombot" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name highlight">金沙</span> <a href="https://surl.amap.com/6Oj59zhG9fSh" class="nav-link" target="_blank">导航</a></div>
+  </div>
+  <div class="hall-list">
+    <div class="hall-card"><span class="hall-name">格菓美</span> <a href="https://surl.amap.com/9vHvb2Qm7jA" class="nav-link" target="_blank">导航</a></div>
+    <div class="hall-card"><span class="hall-name">蓝堡</span> <a href="https://surl.amap.com/gy5oOTv1z74u" class="nav-link" target="_blank">导航</a></div>
+  </div>
+</div>
+
+<div class="no-result" id="noResult" style="display:none;">暂无匹配的舞厅～试试其他关键词吧✨</div>
+
+<div class="tips">
+  数据来源于网络，仅供参考<br>
+  实际情况以现场为准 · 祝今晚舞步飞扬，心情绽放～🕺💃
+</div>
+
+<script>
+  const cityBtns = document.querySelectorAll('.city-btn');
+  const searchInput = document.getElementById('searchInput');
+  const noResult = document.getElementById('noResult');
+
+  cityBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      cityBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showCity(btn.dataset.city);
+    });
+  });
+
+  function showCity(cityId) {
+    document.querySelectorAll('.city-section').forEach(sec => sec.classList.toggle('active', sec.id === cityId));
+    filterHalls();
+  }
+
+  function filterHalls() {
+    const query = searchInput.value.toLowerCase().trim();
+    const activeSection = document.querySelector('.city-section.active');
+    if (!activeSection) return;
+
+    const cards = activeSection.querySelectorAll('.hall-card');
+    let match = false;
+
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const isPinned = card.closest('.pinned');
+
+      if (query === '' || text.includes(query)) {
+        card.style.display = 'block';
+        match = true;
       } else {
-        document.exitFullscreen();
-        noSleep.disable();
+        card.style.display = 'none';
       }
+
+      if (isPinned) card.style.display = 'block';
     });
 
-    // 当前时间
-    function updateCurrentTime() {
-      const now = new Date();
-      const date = now.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/');
-      const time = now.toTimeString().slice(0, 8);
-      document.getElementById('current-time').textContent = `${date} ${time}`;
-    }
-    setInterval(updateCurrentTime, 100);
-    updateCurrentTime();
+    noResult.style.display = (match || query === '') ? 'none' : 'block';
+  }
 
-    // 模式切换
-    document.getElementById('qu').addEventListener('change', () => {
-      document.getElementById('qu-fields').style.display = 'block';
-      document.getElementById('min-fields').style.display = 'none';
-      document.getElementById('total-qu-line').style.display = 'flex';
-      resetCalc();
-    });
-    document.getElementById('min').addEventListener('change', () => {
-      document.getElementById('qu-fields').style.display = 'none';
-      document.getElementById('min-fields').style.display = 'block';
-      document.getElementById('total-qu-line').style.display = 'none';
-      resetCalc();
-    });
+  searchInput.addEventListener('input', filterHalls);
 
-    // 开始
-    document.getElementById('btn-start').addEventListener('click', () => {
-      if (isRunning) return;
-      isRunning = true;
-      startTime = new Date();
-      document.getElementById('start-time').textContent = startTime.toTimeString().slice(0, 8);
-      document.getElementById('status-text').textContent = '计费中';
-      noSleep.enable();
-      timer = setInterval(updateTimer, 50);
-      updateTimer();
-    });
-
-    // 结束
-    document.getElementById('btn-end').addEventListener('click', () => {
-      if (!isRunning) return;
-      clearInterval(timer);
-      isRunning = false;
-      const end = new Date();
-      document.getElementById('end-time').textContent = end.toTimeString().slice(0, 8);
-      calculateTotal();
-      noSleep.disable();
-    });
-
-    // 复位
-    document.getElementById('btn-reset').addEventListener('click', () => {
-      clearInterval(timer);
-      isRunning = false;
-      startTime = null;
-      resetCalc();
-      document.getElementById('status-text').textContent = '未计费';
-      document.getElementById('start-time').textContent = '--';
-      document.getElementById('end-time').textContent = '--';
-      noSleep.disable();
-    });
-
-    function updateTimer() {
-      if (!startTime) return;
-      calculateTotal();
-    }
-
-    function calculateTotal() {
-      const now = new Date();
-      const diffMs = now - startTime;
-      const totalSeconds = Math.floor(diffMs / 1000);
-      const ms = diffMs % 1000;
-      const seconds = totalSeconds % 60;
-      const minutes = Math.floor(totalSeconds / 60) % 60;
-      const hours = Math.floor(totalSeconds / 3600);
-      const timeStr = `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
-      document.getElementById('total-time').textContent = timeStr;
-
-      let cost = 0;
-      let qu = '--';
-
-      if (document.getElementById('qu').checked) {
-        const pricePerQu = parseFloat(document.getElementById('price-qu').value) || 0;
-        const timePerQuMin = parseFloat(document.getElementById('time-qu').value) || 1;
-        const timePerQuMs = timePerQuMin * 60 * 1000;
-        qu = Math.ceil(diffMs / timePerQuMs);
-        cost = qu * pricePerQu;
-        document.getElementById('total-qu').textContent = qu + ' 曲';
-      } else {
-        const pricePerMin = parseFloat(document.getElementById('price-min').value) || 0;
-        const minTime = parseFloat(document.getElementById('min-time').value) || 0;
-        const effectiveMin = Math.max(Math.ceil(diffMs / 60000), minTime);
-        cost = effectiveMin * pricePerMin;
-      }
-      document.getElementById('total-cost').textContent = '¥' + cost.toFixed(0);
-    }
-
-    function resetCalc() {
-      document.getElementById('total-time').textContent = '--';
-      document.getElementById('total-qu').textContent = '--';
-      document.getElementById('total-cost').textContent = '--';
-    }
-  </script>
+  // 默认上海
+  showCity('shanghai');
+</script>
 </body>
 </html>

@@ -1,1273 +1,397 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>@eastchinaballroom 春节舞讯（除夕-初三）</title>
-  <style>
-    :root {
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --text: #1f2328;
-      --muted: #6b7280;
-      --brand1: #8b5cf6;
-      --brand2: #a855f7;
-      --shadow: 0 10px 30px rgba(17, 24, 39, .08);
-      --radius: 16px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 12px 14px 14px;
-      background: linear-gradient(90deg, var(--brand1), var(--brand2));
-      box-shadow: 0 8px 24px rgba(0,0,0,.12);
-    }
-    .topbar .row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .city-pill {
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.18);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.22);
-      cursor: pointer;
-      user-select: none;
-      font-weight: 600;
-    }
-    .city-pill .chev {
-      opacity: .9;
-      font-size: 12px;
-    }
-    .search {
-      flex: 1 1 auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.95);
-      border: 1px solid rgba(255,255,255,.55);
-    }
-    .search input {
-      width: 100%;
-      border: 0;
-      outline: none;
-      font-size: 14px;
-      background: transparent;
-    }
-    .search .icon {
-      width: 18px; height: 18px; opacity: .55;
-    }
-    .meta {
-      margin-top: 10px;
-      color: rgba(255,255,255,.92);
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 12px 12px 80px;
-    }
-    .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 10px 2px 12px;
-    }
-    .chip {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid rgba(17,24,39,.10);
-      box-shadow: 0 6px 18px rgba(17, 24, 39, .05);
-      font-size: 12px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .chip.active {
-      border-color: rgba(139,92,246,.55);
-      box-shadow: 0 10px 22px rgba(139,92,246,.18);
-    }
-    .list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px 14px 12px;
-      border: 1px solid rgba(17,24,39,.06);
-    }
-    .card .head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .name {
-      font-size: 16px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-    .sub {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-      white-space: pre-line;
-    }
-    .badge {
-      flex: 0 0 auto;
-      align-self: flex-start;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid rgba(16,185,129,.35);
-      color: #059669;
-      background: rgba(16,185,129,.10);
-    }
-    .foot {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-    .city-tag {
-      font-size: 12px;
-      color: var(--muted);
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(17,24,39,.04);
-      border: 1px solid rgba(17,24,39,.06);
-    }
-    .navbtn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      text-decoration: none;
-      color: #4c1d95;
-      border: 1px solid rgba(139,92,246,.35);
-      background: rgba(139,92,246,.10);
-      font-weight: 700;
-      font-size: 12px;
-    }
-    .navbtn svg { width: 16px; height: 16px; }
-    .empty {
-      padding: 30px 10px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2026年2月24日 江浙沪今日舞讯</title>
+<style>
+:root {{
+  --bg: #f6f6f7;
+  --card: #ffffff;
+  --text: #111;
+  --sub: #666;
+  --line: #ececef;
+  --accent: #8a2be2; /* purple like sample */
+  --chip: #f3f4f6;
+}}
+*{{box-sizing:border-box}}
+body{{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+}}
 
-    /* City modal */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(17,24,39,.45);
-      display: none;
-      z-index: 50;
-    }
-    .modal.open { display: block; }
-    .sheet {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      max-height: 88vh;
-      background: var(--bg);
-      border-radius: 18px 18px 0 0;
-      overflow: hidden;
-      box-shadow: 0 -16px 40px rgba(0,0,0,.20);
-    }
-    .sheet-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 14px 10px;
-      background: #fff;
-      border-bottom: 1px solid rgba(17,24,39,.08);
-    }
-    .sheet-title {
-      font-weight: 900;
-      font-size: 15px;
-    }
-    .close {
-      border: 0;
-      background: transparent;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 6px 10px;
-    }
-    .sheet-body {
-      padding: 12px 12px 14px;
-      overflow: auto;
-      max-height: calc(88vh - 54px);
-    }
-    .city-search {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid rgba(17,24,39,.10);
-      margin-bottom: 12px;
-    }
-    .city-search input {
-      width: 100%;
-      border: 0;
-      outline: none;
-      font-size: 14px;
-      background: transparent;
-    }
-    .section-title {
-      font-size: 12px;
-      color: var(--muted);
-      margin: 10px 2px 8px;
-      font-weight: 800;
-    }
-    .popular-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    .city-btn {
-      padding: 10px 0;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid rgba(17,24,39,.08);
-      text-align: center;
-      font-weight: 800;
-      cursor: pointer;
-      user-select: none;
-    }
-    .city-list {
-      margin-top: 10px;
-      background: #fff;
-      border-radius: 14px;
-      border: 1px solid rgba(17,24,39,.08);
-      overflow: hidden;
-    }
-    .city-item {
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(17,24,39,.06);
-      cursor: pointer;
-      user-select: none;
-      font-weight: 700;
-    }
-    .city-item:last-child { border-bottom: 0; }
-    @media (min-width: 740px) {
-      .list { grid-template-columns: 1fr 1fr; }
-      .popular-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-  </style>
+/* top bar */
+.topbar{{
+  position:sticky; top:0; z-index:20;
+  background:linear-gradient(90deg, rgba(138,43,226,0.85), rgba(160,82,255,0.75));
+  padding:10px 12px 12px;
+}}
+.toprow{{
+  display:flex; align-items:center; gap:10px;
+}}
+.citypill{{
+  flex:0 0 auto;
+  display:flex; align-items:center; gap:6px;
+  color:#fff;
+  font-size:15px;
+  padding:8px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.22);
+}}
+.citypill span.name{{
+  max-width:96px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-weight:600;
+}}
+.searchwrap{{flex:1 1 auto}}
+.searchbox{{
+  width:100%;
+  display:flex; align-items:center;
+  background:rgba(255,255,255,0.92);
+  border-radius:999px;
+  padding:6px 10px;           /* smaller + normal */
+}}
+.searchbox input{{
+  width:100%;
+  border:none; outline:none;
+  font-size:14px;
+  background:transparent;
+}}
+.searchbox input::placeholder{{color:#999}}
+
+.container{{padding:10px 10px calc(18px + env(safe-area-inset-bottom))}}
+
+/* cards */
+.card{{
+  background:var(--card);
+  border-radius:16px;
+  padding:14px 14px 12px;
+  margin:10px 0;
+  box-shadow:0 1px 0 rgba(0,0,0,0.04);
+}}
+.cardtop{{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+}}
+.title{{
+  font-size:16px;
+  font-weight:800;
+  line-height:1.25;
+}}
+.badge{{
+  flex:0 0 auto;
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(46, 204, 113, 0.45);
+  color:#18a957;
+  background:rgba(46, 204, 113, 0.08);
+  white-space:nowrap;
+}}
+.line{{
+  margin-top:8px;
+  font-size:13px;
+  color:var(--sub);
+  display:flex; gap:8px; align-items:center;
+}}
+.dot{{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(138,43,226,0.65);
+  display:inline-block;
+}}
+.navrow{{
+  margin-top:10px;
+  display:flex; justify-content:flex-end;
+}}
+.navbtn{{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:10px 12px;
+  border-radius:14px;
+  text-decoration:none;
+  font-size:14px;
+  color:#fff;
+  background:rgba(138,43,226,0.92);
+}}
+
+/* full screen city modal */
+.modal{{
+  position:fixed; inset:0;
+  background:#fff;
+  z-index:50;
+  display:none;
+  flex-direction:column;
+}}
+.modal.show{{display:flex}}
+.modalhead{{
+  padding:12px 12px 10px;
+  border-bottom:1px solid var(--line);
+  background:#fff;
+  position:sticky; top:0; z-index:2;
+}}
+.headrow{{
+  display:flex; align-items:center; gap:10px;
+}}
+.backbtn{{
+  border:none;
+  background:transparent;
+  font-size:16px;
+  padding:6px 6px;
+}}
+.headtitle{{font-size:16px;font-weight:800}}
+.citysearch{{
+  margin-top:10px;
+  width:100%;
+  padding:6px 10px;          /* smaller + normal (your request) */
+  font-size:14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#f7f7f8;
+  outline:none;
+}}
+.sectiontitle{{
+  padding:12px 12px 8px;
+  font-size:13px;
+  color:#777;
+}}
+.hotgrid{{
+  padding:0 12px 10px;
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:10px;
+}}
+@media (min-width:390px){{ .hotgrid{{grid-template-columns:repeat(4,1fr)}} }}
+.hotitem{{
+  background:var(--chip);
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:10px 8px;
+  text-align:center;
+  font-size:14px;
+}}
+.citylist{{
+  position:relative;
+  flex:1 1 auto;
+  overflow:auto;
+  padding-bottom:calc(16px + env(safe-area-inset-bottom));
+}}
+.grouphead{{
+  padding:8px 12px;
+  font-weight:800;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:#fff;
+  position:sticky; top:0;
+}}
+.cityitem{{
+  padding:12px 12px;
+  border-bottom:1px solid #f0f0f1;
+  font-size:15px;
+}}
+.indexbar{{
+  position:fixed;
+  right:6px;
+  top:150px;
+  bottom:90px;
+  width:20px;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  z-index:60;
+  user-select:none;
+}}
+.indexbar span{{
+  font-size:11px;
+  color:#888;
+  padding:2px 0;
+}}
+.empty{{
+  padding:26px 12px;
+  text-align:center;
+  color:#888;
+}}
+</style>
 </head>
 <body>
   <div class="topbar">
-    <div class="row">
-      <div id="cityPill" class="city-pill" role="button" aria-label="选择城市">
-        <span id="cityLabel">全部</span>
-        <span class="chev">▼</span>
-      </div>
-      <div class="search">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2"/>
-          <path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <input id="q" placeholder="请输入关键字搜索（舞厅名/城市）" autocomplete="off"/>
-      </div>
-    </div>
-    <div class="meta">
-      <div>春节舞讯：除夕夜至大年初三</div>
-      <div>@eastchinaballroom</div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="chips" aria-label="日期筛选">
-      <div class="chip active" data-day="all">全部</div>
-      <div class="chip" data-day="eve">除夕</div>
-      <div class="chip" data-day="d1">初一</div>
-      <div class="chip" data-day="d2">初二</div>
-      <div class="chip" data-day="d3">初三</div>
-    </div>
-
-    <div id="list" class="list"></div>
-    <div id="empty" class="empty" style="display:none;">没有匹配的舞厅</div>
-  </div>
-
-  <!-- City selector modal -->
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true">
-      <div class="sheet-header">
-        <div class="sheet-title">选择城市</div>
-        <button class="close" id="closeModal" aria-label="关闭">✕</button>
-      </div>
-      <div class="sheet-body">
-        <div class="city-search">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <input id="citySearch" placeholder="输入城市" autocomplete="off"/>
+    <div class="toprow">
+      <button class="citypill" id="openCity" aria-label="选择城市">
+        <span class="name" id="cityLabel">南通</span><span>▾</span>
+      </button>
+      <div class="searchwrap">
+        <div class="searchbox">
+          <input id="q" placeholder="请输入关键字搜索" />
         </div>
-
-        <div class="section-title">热门城市</div>
-        <div id="popular" class="popular-grid"></div>
-
-        <div class="section-title">全部城市</div>
-        <div id="cityList" class="city-list"></div>
       </div>
     </div>
   </div>
+
+  <div class="container" id="list"></div>
+
+  <div class="modal" id="cityModal" aria-hidden="true">
+    <div class="modalhead">
+      <div class="headrow">
+        <button class="backbtn" id="closeCity">←</button>
+        <div class="headtitle">选择城市</div>
+      </div>
+      <input class="citysearch" id="cityQ" placeholder="输入城市" />
+    </div>
+
+    <div class="sectiontitle">热门城市</div>
+    <div class="hotgrid" id="hotGrid"></div>
+
+    <div class="citylist" id="cityList"></div>
+  </div>
+
+  <div class="indexbar" id="indexBar"></div>
 
 <script>
-const DATA = [
-  {
-    "city": "宜兴",
-    "name": "蓝迪",
-    "displayName": "蓝迪 🐉🔥",
-    "businessHours": "午场: 12:30-16:30 \n晚场: 18:30-00:00",
-    "allowDragon": true,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/7OWtqsUP17r"
-  },
-  {
-    "city": "宜兴",
-    "name": "蓝调",
-    "displayName": "蓝调",
-    "businessHours": "19:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/dFKXitv1Vj"
-  },
-  {
-    "city": "苏州",
-    "name": "金莎大舞厅",
-    "displayName": "金莎大舞厅 🔥",
-    "businessHours": "07:00-21:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/6Oj59zhG9fSh"
-  },
-  {
-    "city": "苏州",
-    "name": "格菓美大舞厅",
-    "displayName": "格菓美大舞厅",
-    "businessHours": "09:30-22:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/9vHvb2Qm7jA"
-  },
-  {
-    "city": "江阴",
-    "name": "超级猴子",
-    "displayName": "超级猴子",
-    "businessHours": "午场: 12:30-17:00 \n晚场: 18:30-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/haHThGB1xf5x"
-  },
-  {
-    "city": "江阴",
-    "name": "北国茶座",
-    "displayName": "北国茶座",
-    "businessHours": "午场: 12:30-16:30 \n晚场: 18:30-22:30",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/FZYlmglveVX"
-  },
-  {
-    "city": "上海",
-    "name": "乐轩音乐茶座",
-    "displayName": "乐轩音乐茶座 🐉🔥",
-    "businessHours": "13:00-23:00",
-    "allowDragon": true,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/9g18GtPW7Em"
-  },
-  {
-    "city": "上海",
-    "name": "吴淞金港舞厅(夜来香)",
-    "displayName": "吴淞金港舞厅(夜来香)",
-    "businessHours": "12:31-21:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/yQUBQAxg1FO"
-  },
-  {
-    "city": "上海",
-    "name": "辉煌音乐吧",
-    "displayName": "辉煌音乐吧",
-    "businessHours": "13:00-22:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6c2O9m6t1L7"
-  },
-  {
-    "city": "上海",
-    "name": "漾轻餐舞吧",
-    "displayName": "漾轻餐舞吧",
-    "businessHours": "12:31-21:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/4ytlaCMp8cfm"
-  },
-  {
-    "city": "上海",
-    "name": "解忧音乐茶吧(红太阳)",
-    "displayName": "解忧音乐茶吧(红太阳)",
-    "businessHours": "12:00-22:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/r5UUWDHi4v3"
-  },
-  {
-    "city": "镇江",
-    "name": "金星音乐吧",
-    "displayName": "金星音乐吧",
-    "businessHours": "13:00-18:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/gLE6oMBY8xs"
-  },
-  {
-    "city": "丹阳",
-    "name": "芭黎人歌舞厅",
-    "displayName": "芭黎人歌舞厅",
-    "businessHours": "午场: 13:00-17:00\n晚场: 18:30-00:30",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/RIqTB3h4Jf"
-  },
-  {
-    "city": "丹阳",
-    "name": "鑫源歌舞厅",
-    "displayName": "鑫源歌舞厅",
-    "businessHours": "午场: 13:00-17:00\n晚场: 18:30-23:30",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/r6YBudHR8Xx"
-  },
-  {
-    "city": "句容",
-    "name": "温格酒吧",
-    "displayName": "温格酒吧 🐉🔥",
-    "businessHours": "19:00-02:00",
-    "allowDragon": true,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/qcH9Wwl1xfO0"
-  },
-  {
-    "city": "句容",
-    "name": "艾莎音乐酒吧",
-    "displayName": "艾莎音乐酒吧",
-    "businessHours": "14:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/r4Jo6xr1p2JQ"
-  },
-  {
-    "city": "句容",
-    "name": "星夜之约",
-    "displayName": "星夜之约",
-    "businessHours": "18:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/1slmWUEx1dc5C"
-  },
-  {
-    "city": "扬州",
-    "name": "银河",
-    "displayName": "银河 🔥",
-    "businessHours": "13:30-02:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/FoPia81dcq5"
-  },
-  {
-    "city": "扬州",
-    "name": "俊美",
-    "displayName": "俊美 🔥",
-    "businessHours": "13:30-02:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/1miXuwwu2qc"
-  },
-  {
-    "city": "扬州",
-    "name": "丽宝",
-    "displayName": "丽宝 🔥",
-    "businessHours": "13:30-02:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/2qhSUZCr1t7Gx"
-  },
-  {
-    "city": "扬州",
-    "name": "顺达音乐酒馆",
-    "displayName": "顺达音乐酒馆 🐉",
-    "businessHours": "13:00-02:00",
-    "allowDragon": true,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/zLfQ86Odpd"
-  },
-  {
-    "city": "扬州",
-    "name": "星眺",
-    "displayName": "星眺",
-    "businessHours": "19:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/gyqV7dL26M9"
-  },
-  {
-    "city": "南通",
-    "name": "丽莎歌舞厅",
-    "displayName": "丽莎歌舞厅 🔥",
-    "businessHours": "13:00-00:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/c3DSCLk1y83g"
-  },
-  {
-    "city": "南通",
-    "name": "寻梦缘歌舞厅",
-    "displayName": "寻梦缘歌舞厅 🔥",
-    "businessHours": "12:30-00:30",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/29RgvGI310V"
-  },
-  {
-    "city": "南通",
-    "name": "抖舞跳舞俱乐部",
-    "displayName": "抖舞跳舞俱乐部 🐉🔥",
-    "businessHours": "12:30-02:00",
-    "allowDragon": true,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/Vdu1qB1o5gH"
-  },
-  {
-    "city": "南通",
-    "name": "卢米演艺酒吧",
-    "displayName": "卢米演艺酒吧",
-    "businessHours": "12:30-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/r0q597P76E3"
-  },
-  {
-    "city": "南通",
-    "name": "自由空间舞厅",
-    "displayName": "自由空间舞厅 🐉",
-    "businessHours": "午场: 13:00-17:00 \n晚场: 19:00-24:00",
-    "allowDragon": true,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/fm5PpWV1c4NZ"
-  },
-  {
-    "city": "南通",
-    "name": "蒙纳戈娱乐",
-    "displayName": "蒙纳戈娱乐",
-    "businessHours": "13:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/2mZuySB5i0jU"
-  },
-  {
-    "city": "南通",
-    "name": "华冠歌舞厅",
-    "displayName": "华冠歌舞厅 🐉",
-    "businessHours": "13:00-01:00",
-    "allowDragon": true,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/1bLiHwim8um"
-  },
-  {
-    "city": "南通",
-    "name": "启东后海酒吧",
-    "displayName": "启东后海酒吧",
-    "businessHours": "13:00-00:30",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6UBFDYFC1salo"
-  },
-  {
-    "city": "南通",
-    "name": "通州玛莎嗨嗨",
-    "displayName": "通州玛莎嗨嗨",
-    "businessHours": "13:30-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/VfuIXry6nI"
-  },
-  {
-    "city": "泰州",
-    "name": "简爱小酒馆",
-    "displayName": "简爱小酒馆",
-    "businessHours": "19:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/1x9GWuzvJ9kA"
-  },
-  {
-    "city": "泰州",
-    "name": "寻酒作乐小酒馆",
-    "displayName": "寻酒作乐小酒馆",
-    "businessHours": "19:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6uAEygW19glv"
-  },
-  {
-    "city": "常州",
-    "name": "玖松（原绮梦）",
-    "displayName": "玖松（原绮梦）",
-    "businessHours": "午场: 12:00-16:30 \n晚场: 18:30-23:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/c3vuKN2n2cQ"
-  },
-  {
-    "city": "常州",
-    "name": "橙子酒吧（凯丽舞厅）",
-    "displayName": "橙子酒吧（凯丽舞厅） 🐉🔥",
-    "businessHours": "午场: 12:30-17:00 \n晚场: 18:30-23:00",
-    "allowDragon": true,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/rfBwHItNgdT"
-  },
-  {
-    "city": "常州",
-    "name": "众乐",
-    "displayName": "众乐",
-    "businessHours": "午场: 12:00-16:30 \n晚场: 18:30-22:30",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/2FhXygWHu5K5"
-  },
-  {
-    "city": "盐城",
-    "name": "蓝堡酒吧",
-    "displayName": "蓝堡酒吧",
-    "businessHours": "18:30-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6aXuti2E152r5"
-  },
-  {
-    "city": "盐城",
-    "name": "星花歌舞厅",
-    "displayName": "星花歌舞厅",
-    "businessHours": "18:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6ud3Rui63m"
-  },
-  {
-    "city": "嘉兴",
-    "name": "心悦",
-    "displayName": "心悦 🔥",
-    "businessHours": "12:00-00:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/3JIUU4tR1q0A1"
-  },
-  {
-    "city": "嘉兴",
-    "name": "情浓",
-    "displayName": "情浓",
-    "businessHours": "午场: 12:00-17:00 \n晚场: 18:00-23:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/3J1m6aCvKgWr"
-  },
-  {
-    "city": "嘉兴",
-    "name": "莲蓉",
-    "displayName": "莲蓉 🔥",
-    "businessHours": "12:00-02:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/3JvWj2tlf1cM"
-  },
-  {
-    "city": "嘉兴",
-    "name": "大鹏来",
-    "displayName": "大鹏来",
-    "businessHours": "12:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/2cBv0l4sPfaU"
-  },
-  {
-    "city": "桐乡",
-    "name": "梦可迪",
-    "displayName": "梦可迪",
-    "businessHours": "午场: 12:00-16:30 \n晚场: 18:00-23:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6QzfcfOQ1oaPR"
-  },
-  {
-    "city": "桐乡",
-    "name": "红宝石",
-    "displayName": "红宝石",
-    "businessHours": "午场: 12:00-17:00 \n晚场: 18:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6QSfUd9Gkcdf"
-  },
-  {
-    "city": "湖州",
-    "name": "长兴小酒馆",
-    "displayName": "长兴小酒馆",
-    "businessHours": "18:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/4wJ2EoPT1odvy"
-  },
-  {
-    "city": "海盐",
-    "name": "夜色",
-    "displayName": "夜色",
-    "businessHours": "15:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/7QQqNjEQblA"
-  },
-  {
-    "city": "杭州",
-    "name": "塘果酒肆·音乐吧",
-    "displayName": "塘果酒肆·音乐吧",
-    "businessHours": "12:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "春节不放假",
-    "amap": "https://surl.amap.com/9y1HxSF3ts"
-  },
-  {
-    "city": "杭州",
-    "name": "新鑫食蒲(好久不见)",
-    "displayName": "新鑫食蒲(好久不见) 🔥",
-    "businessHours": "13:00-01:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "春节不放假",
-    "amap": "https://surl.amap.com/3gy21RI91ncLO"
-  },
-  {
-    "city": "杭州",
-    "name": "七五舞厅",
-    "displayName": "七五舞厅",
-    "businessHours": "14:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/5yl0tNMh7sT"
-  },
-  {
-    "city": "杭州",
-    "name": "右西茶吧",
-    "displayName": "右西茶吧",
-    "businessHours": "14:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/t659rXjp1it"
-  },
-  {
-    "city": "杭州",
-    "name": "蓝波湾音乐酒吧",
-    "displayName": "蓝波湾音乐酒吧",
-    "businessHours": "14:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/btcQhRQ1q9o5"
-  },
-  {
-    "city": "杭州",
-    "name": "森米酒吧",
-    "displayName": "森米酒吧",
-    "businessHours": "17:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/6REgCMXy1A8El"
-  },
-  {
-    "city": "杭州",
-    "name": "临安魅舞音乐酒馆",
-    "displayName": "临安魅舞音乐酒馆",
-    "businessHours": "14:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/gDsWLdrgaL4"
-  },
-  {
-    "city": "温州",
-    "name": "浪花歌舞",
-    "displayName": "浪花歌舞",
-    "businessHours": "13:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/UwZPY97gxW"
-  },
-  {
-    "city": "温州",
-    "name": "龙湾浪花",
-    "displayName": "龙湾浪花",
-    "businessHours": "午场: 12:00-17:30\n晚场: 18:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/hqXo2j31n6pP"
-  },
-  {
-    "city": "丽水",
-    "name": "蓝傲",
-    "displayName": "蓝傲 🐉🔥",
-    "businessHours": "19:00-02:00",
-    "allowDragon": true,
-    "hot": true,
-    "note": "春节不放假",
-    "amap": "https://surl.amap.com/fs8q8jnIf0W"
-  },
-  {
-    "city": "义乌",
-    "name": "迪迪k舞",
-    "displayName": "迪迪k舞 🐉",
-    "businessHours": "19:30-02:00",
-    "allowDragon": true,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/bv5l6DYwc6s"
-  },
-  {
-    "city": "义乌",
-    "name": "丽莎bar",
-    "displayName": "丽莎bar 🐉",
-    "businessHours": "19:30-03:00",
-    "allowDragon": true,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/bvLW0kSybd2"
-  },
-  {
-    "city": "衢州",
-    "name": "摇一摇",
-    "displayName": "摇一摇",
-    "businessHours": "20:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/11ErgIUpl0MT"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "逍遥",
-    "displayName": "逍遥 🔥",
-    "businessHours": "16:00-02:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "春节不放假",
-    "amap": "https://surl.amap.com/38Z0Y4wB1pebJ"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "邂逅",
-    "displayName": "邂逅 🔥",
-    "businessHours": "19:00-03:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/1HpkeQpTu9Te"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "蓝堡",
-    "displayName": "蓝堡",
-    "businessHours": "18:30-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/TYlZZPc70s"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "芳华",
-    "displayName": "芳华",
-    "businessHours": "19:00-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/U2KBF31h54l"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "悦色",
-    "displayName": "悦色",
-    "businessHours": "19:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/bxqeWyWx3SG"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "飞悦",
-    "displayName": "飞悦",
-    "businessHours": "18:00-05:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/hbA4wa91Bd28"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "春风十里",
-    "displayName": "春风十里",
-    "businessHours": "19:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/hdGQfFb1nauo"
-  },
-  {
-    "city": "绍兴柯桥",
-    "name": "蓝梦",
-    "displayName": "蓝梦",
-    "businessHours": "18:30-01:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/h7Oy9trr75w"
-  },
-  {
-    "city": "台州",
-    "name": "夜江楠舞厅",
-    "displayName": "夜江楠舞厅",
-    "businessHours": "午场: 13:00-16:30 \n晚场: 19:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/hniTCUt1i5pD"
-  },
-  {
-    "city": "宁波",
-    "name": "乐8量贩KTV",
-    "displayName": "乐8量贩KTV 🔥",
-    "businessHours": "午场: 12:00-16:30 \n晚场: 18:30-23:30",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/gfd5zDz1m9v7"
-  },
-  {
-    "city": "宁波",
-    "name": "新节奏时尚量贩KTV",
-    "displayName": "新节奏时尚量贩KTV 🔥",
-    "businessHours": "午场: 12:00-17:00\n晚场: 18:30-23:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/1nk3kliX44F"
-  },
-  {
-    "city": "宁波",
-    "name": "丰成娱乐",
-    "displayName": "丰成娱乐",
-    "businessHours": "13:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/ghWabAR167ut"
-  },
-  {
-    "city": "宁波",
-    "name": "康都舞厅",
-    "displayName": "康都舞厅 🐉",
-    "businessHours": "午场: 12:00-16:00\n晚场: 18:30-23:00",
-    "allowDragon": true,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/sSD7f7P12eNh"
-  },
-  {
-    "city": "宁波",
-    "name": "天潮娱乐",
-    "displayName": "天潮娱乐 🔥",
-    "businessHours": "午场: 13:00-17:30\n晚场: 18:30-01:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/fJ0xzAuM9af"
-  },
-  {
-    "city": "宁波",
-    "name": "丽莎舞厅",
-    "displayName": "丽莎舞厅",
-    "businessHours": "午场: 12:30-17:00\n晚场: 18:00-00:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/h5TXLDkgcpD"
-  },
-  {
-    "city": "南京",
-    "name": "相逢",
-    "displayName": "相逢 🔥",
-    "businessHours": "13:00-02:00",
-    "allowDragon": false,
-    "hot": true,
-    "note": "",
-    "amap": "https://surl.amap.com/g4SBaypT3Z5"
-  },
-  {
-    "city": "南京",
-    "name": "海浪酒馆",
-    "displayName": "海浪酒馆",
-    "businessHours": "19:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/gJPdDWt1b5of"
-  },
-  {
-    "city": "南京",
-    "name": "M9音乐吧",
-    "displayName": "M9音乐吧",
-    "businessHours": "14:00-02:00",
-    "allowDragon": false,
-    "hot": false,
-    "note": "",
-    "amap": "https://surl.amap.com/pW3hPgN153tc"
-  }
-];
-const ALL_CITIES = ["上海", "丹阳", "丽水", "义乌", "南京", "南通", "句容", "台州", "嘉兴", "宁波", "宜兴", "常州", "扬州", "杭州", "桐乡", "江阴", "泰州", "海盐", "温州", "湖州", "盐城", "绍兴柯桥", "苏州", "衢州", "镇江"];
-const POPULAR = ["杭州", "南京", "南通", "上海", "句容", "桐乡", "盐城", "苏州", "镇江", "宜兴", "温州", "扬州"];
+const records = [{"city": "宜兴", "name": "蓝迪", "time": "午场: 12:30-16:30 \n晚场: 18:30-00:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/7OWtqsUP17r"}, {"city": "宜兴", "name": "蓝调", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/dFKXitv1Vj"}, {"city": "宜兴", "name": "汇超舞厅", "time": "午场: 12:30-17:00 \n晚场: 18:30-23:30", "dragon": false, "hot": false, "link": "https://surl.amap.com/7BvLnBgiayj"}, {"city": "苏州", "name": "丽花宫大舞厅", "time": "13:30-23:00", "dragon": false, "hot": true, "link": "https://surl.amap.com/6Oj59zhG9fSh"}, {"city": "苏州", "name": "格菓美大舞厅", "time": "09:30-22:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/9vHvb2Qm7jA"}, {"city": "江阴", "name": "超级猴子", "time": "午场: 12:30-17:00 \n晚场: 18:30-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/haHThGB1xf5x"}, {"city": "江阴", "name": "北国茶座", "time": "午场: 12:30-16:30 \n晚场: 18:30-22:30", "dragon": false, "hot": false, "link": "https://surl.amap.com/FZYlmglveVX"}, {"city": "上海", "name": "乐轩音乐茶座", "time": "13:00-23:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/9g18GtPW7Em"}, {"city": "上海", "name": "辉煌音乐吧", "time": "13:00-22:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/6c2O9m6t1L7"}, {"city": "上海", "name": "亚町湾活动室", "time": "12:00-21:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/4ytlaCMp8cfm"}, {"city": "镇江", "name": "金星音乐吧", "time": "13:00-18:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/gLE6oMBY8xs"}, {"city": "丹阳", "name": "芭黎人歌舞厅", "time": "午场: 13:00-17:00\n晚场: 18:30-00:30", "dragon": false, "hot": false, "link": "https://surl.amap.com/RIqTB3h4Jf"}, {"city": "丹阳", "name": "鑫源歌舞厅", "time": "午场: 13:00-17:00\n晚场: 18:30-23:30", "dragon": false, "hot": false, "link": "https://surl.amap.com/r6YBudHR8Xx"}, {"city": "句容", "name": "温格酒吧", "time": "19:00-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/qcH9Wwl1xfO0"}, {"city": "句容", "name": "艾莎音乐酒吧", "time": "14:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/r4Jo6xr1p2JQ"}, {"city": "扬州", "name": "银河", "time": "13:30-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/FoPia81dcq5"}, {"city": "扬州", "name": "星眺", "time": "19:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/gyqV7dL26M9"}, {"city": "南通", "name": "丽莎歌舞厅", "time": "13:00-00:00", "dragon": false, "hot": true, "link": "https://surl.amap.com/c3DSCLk1y83g"}, {"city": "南通", "name": "寻梦缘歌舞厅", "time": "12:30-00:30", "dragon": false, "hot": true, "link": "https://surl.amap.com/29RgvGI310V"}, {"city": "南通", "name": "抖舞跳舞俱乐部", "time": "12:30-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/Vdu1qB1o5gH"}, {"city": "南通", "name": "卢米演艺酒吧", "time": "12:30-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/r0q597P76E3"}, {"city": "南通", "name": "自由空间舞厅", "time": "午场: 13:00-17:00 \n晚场: 19:00-24:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/fm5PpWV1c4NZ"}, {"city": "南通", "name": "蒙纳戈娱乐", "time": "13:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/2mZuySB5i0jU"}, {"city": "南通", "name": "星鼎娱乐中心", "time": "13:00-01:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/1mZJgkCN6xV"}, {"city": "南通", "name": "启东铭鼎酒吧", "time": "13:00-00:30", "dragon": false, "hot": false, "link": "https://surl.amap.com/3zRI8Vs94Df"}, {"city": "南通", "name": "通州玛莎嗨嗨", "time": "13:30-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/VfuIXry6nI"}, {"city": "泰州", "name": "简爱小酒馆", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/1x9GWuzvJ9kA"}, {"city": "泰州", "name": "寻酒作乐小酒馆", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/6uAEygW19glv"}, {"city": "盐城", "name": "蓝堡酒吧", "time": "18:30-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/6aXuti2E152r5"}, {"city": "盐城", "name": "星花歌舞厅", "time": "18:00-01:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/6ud3Rui63m"}, {"city": "嘉兴", "name": "心悦", "time": "12:00-00:00", "dragon": false, "hot": true, "link": "https://surl.amap.com/3JIUU4tR1q0A1"}, {"city": "嘉兴", "name": "情浓", "time": "午场: 12:00-17:00 \n晚场: 18:00-23:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/3J1m6aCvKgWr"}, {"city": "嘉兴", "name": "莲蓉", "time": "12:00-02:00", "dragon": false, "hot": true, "link": "https://surl.amap.com/3JvWj2tlf1cM"}, {"city": "嘉兴", "name": "紫莎舞厅", "time": "午场: 12:00-17:00 \n晚场: 18:00-23:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/3JHcw7t9k2Ig"}, {"city": "桐乡", "name": "梦可迪", "time": "午场: 12:00-16:30 \n晚场: 18:00-23:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/6QzfcfOQ1oaPR"}, {"city": "桐乡", "name": "红宝石", "time": "午场: 12:00-17:00 \n晚场: 18:00-01:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/6QSfUd9Gkcdf"}, {"city": "桐乡", "name": "银河歌舞厅", "time": "13:30-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/XcCt5U1h5Gi"}, {"city": "海盐", "name": "夜色", "time": "15:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/7QQqNjEQblA"}, {"city": "杭州", "name": "塘果酒肆·音乐吧", "time": "12:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/9y1HxSF3ts"}, {"city": "杭州", "name": "剑齿虎酒吧", "time": "15:00-03:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/1oTmjdz1jddD"}, {"city": "杭州", "name": "新鑫食蒲(好久不见)", "time": "13:00-01:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/3gy21RI91ncLO"}, {"city": "杭州", "name": "七五舞厅", "time": "14:00-01:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/5yl0tNMh7sT"}, {"city": "杭州", "name": "右西茶吧", "time": "14:00-01:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/t659rXjp1it"}, {"city": "杭州", "name": "蓝波湾音乐酒吧", "time": "14:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/btcQhRQ1q9o5"}, {"city": "杭州", "name": "蓝玉娱乐会", "time": "14:00-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/3mncJ6iJOaTH"}, {"city": "杭州", "name": "临安魅舞音乐酒馆", "time": "14:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/gDsWLdrgaL4"}, {"city": "杭州", "name": "富阳群众舞厅", "time": "18:00-01:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/8wieCeN1d4hX"}, {"city": "温州", "name": "浪花歌舞", "time": "13:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/UwZPY97gxW"}, {"city": "温州", "name": "龙湾浪花", "time": "午场: 12:00-17:30\n晚场: 18:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/hqXo2j31n6pP"}, {"city": "丽水", "name": "蓝傲", "time": "19:00-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/fs8q8jnIf0W"}, {"city": "义乌", "name": "迪迪k舞", "time": "19:30-02:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/bv5l6DYwc6s"}, {"city": "义乌", "name": "丽莎bar", "time": "19:30-03:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/bvLW0kSybd2"}, {"city": "衢州", "name": "摇一摇", "time": "20:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/11ErgIUpl0MT"}, {"city": "绍兴柯桥", "name": "逍遥音乐吧", "time": "16:00-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/38Z0Y4wB1pebJ"}, {"city": "绍兴柯桥", "name": "邂逅", "time": "19:00-03:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/1HpkeQpTu9Te"}, {"city": "绍兴柯桥", "name": "新正莎舞酒吧", "time": "17:00-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/hiwZ3Lf1e4as"}, {"city": "绍兴柯桥", "name": "蓝堡酒吧舞厅", "time": "18:30-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/TYlZZPc70s"}, {"city": "绍兴柯桥", "name": "芳华音乐酒吧", "time": "19:00-01:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/U2KBF31h54l"}, {"city": "绍兴柯桥", "name": "悦色酒吧", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/bxqeWyWx3SG"}, {"city": "绍兴柯桥", "name": "飞悦舞厅", "time": "18:00-05:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/hbA4wa91Bd28"}, {"city": "绍兴柯桥", "name": "春风十里音乐酒吧", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/hdGQfFb1nauo"}, {"city": "绍兴柯桥", "name": "蓝梦歌舞厅", "time": "18:30-01:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/h7Oy9trr75w"}, {"city": "台州", "name": "夜江楠舞厅", "time": "午场: 13:00-16:30 \n晚场: 19:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/hniTCUt1i5pD"}, {"city": "宁波", "name": "乐8量贩KTV", "time": "午场: 12:00-16:30 \n晚场: 18:30-23:30", "dragon": false, "hot": true, "link": "https://surl.amap.com/gfd5zDz1m9v7"}, {"city": "宁波", "name": "新节奏时尚量贩KTV", "time": "午场: 12:00-17:00\n晚场: 18:30-23:00", "dragon": false, "hot": true, "link": "https://surl.amap.com/1nk3kliX44F"}, {"city": "宁波", "name": "丰成娱乐", "time": "13:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/ghWabAR167ut"}, {"city": "宁波", "name": "康都舞厅", "time": "午场: 12:00-16:00\n晚场: 18:30-23:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/sSD7f7P12eNh"}, {"city": "宁波", "name": "天潮娱乐", "time": "午场: 13:00-17:30\n晚场: 18:30-01:00", "dragon": false, "hot": true, "link": "https://surl.amap.com/fJ0xzAuM9af"}, {"city": "宁波", "name": "丽莎舞厅", "time": "午场: 12:30-17:00\n晚场: 18:00-00:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/h5TXLDkgcpD"}, {"city": "南京", "name": "相逢", "time": "13:00-02:00", "dragon": true, "hot": true, "link": "ttps://surl.amap.com/2FiPCSop14gVn"}, {"city": "南京", "name": "天涯", "time": "10:00-02:00", "dragon": true, "hot": true, "link": "https://surl.amap.com/fGKCYpc1AejP"}, {"city": "南京", "name": "M9音乐吧", "time": "19:00-02:00", "dragon": true, "hot": false, "link": "https://surl.amap.com/pW3hPgN153tc"}, {"city": "南京", "name": "清悦", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/1Bzsh981hcIo"}, {"city": "南京", "name": "半醺", "time": "19:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/q6P7MSVz9Z4"}, {"city": "南京", "name": "散怀", "time": "13:00-02:00", "dragon": false, "hot": false, "link": "https://surl.amap.com/uhZ8Os580RJ"}];
+const cityGroups = {"S": ["上海", "苏州"], "#": ["丹阳", "义乌", "句容", "宜兴", "桐乡", "江阴", "海盐", "绍兴柯桥"], "L": ["丽水"], "N": ["南京", "南通", "宁波"], "T": ["台州", "泰州"], "J": ["嘉兴"], "Y": ["扬州", "盐城"], "H": ["杭州"], "W": ["温州"], "Q": ["衢州"], "Z": ["镇江"]};
+const hotCities = ["宁波", "扬州", "嘉兴", "台州", "义乌", "杭州", "丽水", "衢州", "南京"];
+const letters = ["H", "J", "L", "N", "Q", "S", "T", "W", "Y", "Z", "#"];
 
-// state
-let state = {
-  city: "全部",
-  q: "",
-  day: "all"
-};
+let currentCity = (records.length ? records[0].city : "全部"); // default like screenshot (top-left city)
+const listEl = document.getElementById("list");
+const qEl = document.getElementById("q");
+const cityLabel = document.getElementById("cityLabel");
 
-const elList = document.getElementById("list");
-const elEmpty = document.getElementById("empty");
-const elCityLabel = document.getElementById("cityLabel");
-const elQ = document.getElementById("q");
+const cityModal = document.getElementById("cityModal");
+const openCity = document.getElementById("openCity");
+const closeCity = document.getElementById("closeCity");
+const hotGrid = document.getElementById("hotGrid");
+const cityList = document.getElementById("cityList");
+const cityQ = document.getElementById("cityQ");
+const indexBar = document.getElementById("indexBar");
 
-// render list
-function render() {
-  const q = state.q.trim().toLowerCase();
-  const city = state.city;
+function titleWithEmoji(r){{
+  let t = r.name;
+  if (r.dragon) t += " 🐉";
+  if (r.hot) t += " 🔥";
+  return t;
+}}
 
-  let rows = DATA.filter(r => {
-    const matchCity = (city === "全部") || (r.city === city);
-    const hay = (r.city + " " + r.name).toLowerCase();
-    const matchQ = !q || hay.includes(q);
-    // day filter: currently no per-day split in source, keep but do not exclude
-    const matchDay = true;
-    return matchCity && matchQ && matchDay;
-  });
+function matchKw(r, kw){{
+  if(!kw) return true;
+  return r.city.includes(kw) || r.name.includes(kw);
+}}
 
-  elList.innerHTML = "";
-  if (!rows.length) {
-    elEmpty.style.display = "block";
+function renderList(){{
+  const kw = qEl.value.trim();
+  const filtered = records.filter(r => (currentCity==="全部" || r.city===currentCity) && matchKw(r, kw));
+
+  listEl.innerHTML = "";
+  if(filtered.length===0){{
+    listEl.innerHTML = '<div class="empty">没有匹配的舞厅</div>';
     return;
-  }
-  elEmpty.style.display = "none";
+  }}
 
-  for (const r of rows) {
+  filtered.forEach(r => {{
     const card = document.createElement("div");
     card.className = "card";
-    const note = r.note ? `<div class="sub">备注：${escapeHtml(r.note)}</div>` : "";
     card.innerHTML = `
-      <div class="head">
-        <div>
-          <div class="name">${escapeHtml(r.displayName)}</div>
-          <div class="sub">营业时间：${escapeHtml(r.businessHours)}</div>
-          ${note}
-        </div>
+      <div class="cardtop">
+        <div class="title">${titleWithEmoji(r)}</div>
         <div class="badge">营业中</div>
       </div>
-      <div class="foot">
-        <div class="city-tag">${escapeHtml(r.city)}</div>
-        <a class="navbtn" href="${escapeAttr(r.amap)}" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 21s7-4.35 7-11a7 7 0 1 0-14 0c0 6.65 7 11 7 11Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          高德导航
-        </a>
+      <div class="line"><span class="dot"></span><span>营业时间: ${r.time}</span></div>
+      <div class="line" style="margin-top:6px;"><span class="dot" style="opacity:.25"></span><span>${r.city}</span></div>
+      <div class="navrow">
+        <a class="navbtn" href="${r.link}" target="_blank" rel="noopener">✈ 导航</a>
       </div>
     `;
-    elList.appendChild(card);
-  }
-}
+    listEl.appendChild(card);
+  }});
+}}
 
-function escapeHtml(s) {
-  return String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
-}
-function escapeAttr(s) {
-  return String(s ?? "").replace(/"/g, "%22");
-}
+function openCityModal(){{
+  cityModal.classList.add("show");
+  cityModal.setAttribute("aria-hidden","false");
+  indexBar.style.display = "flex";
+  cityQ.value = "";
+  renderCityList("");
+  document.body.style.overflow = "hidden";
+}}
+function closeCityModal(){{
+  cityModal.classList.remove("show");
+  cityModal.setAttribute("aria-hidden","true");
+  indexBar.style.display = "none";
+  document.body.style.overflow = "";
+}}
+function setCity(c){{
+  currentCity = c;
+  cityLabel.textContent = c;
+  closeCityModal();
+  renderList(); // auto refresh on city change
+}}
 
-// search input
-elQ.addEventListener("input", (e) => {
-  state.q = e.target.value;
-  render();
-});
+function renderHot(){{
+  hotGrid.innerHTML = "";
+  hotCities.forEach(c => {{
+    const d = document.createElement("div");
+    d.className = "hotitem";
+    d.textContent = c;
+    d.onclick = () => setCity(c);
+    hotGrid.appendChild(d);
+  }});
+}}
 
-// chips
-document.querySelectorAll(".chip").forEach(chip => {
-  chip.addEventListener("click", () => {
-    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-    chip.classList.add("active");
-    state.day = chip.dataset.day;
-    render();
-  });
-});
+function buildIndex(){{
+  indexBar.innerHTML = "";
+  letters.forEach(L => {{
+    const s = document.createElement("span");
+    s.textContent = L;
+    s.onclick = () => {{
+      const el = document.getElementById("sec_"+L);
+      if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+    }};
+    indexBar.appendChild(s);
+  }});
+}}
 
-// city modal
-const modal = document.getElementById("modal");
-const cityPill = document.getElementById("cityPill");
-const closeModal = document.getElementById("closeModal");
-const citySearch = document.getElementById("citySearch");
-const popularWrap = document.getElementById("popular");
-const cityList = document.getElementById("cityList");
-
-function openModal() {
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-  citySearch.value = "";
-  renderCityLists("");
-  citySearch.focus();
-}
-function hideModal() {
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-}
-cityPill.addEventListener("click", openModal);
-closeModal.addEventListener("click", hideModal);
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) hideModal();
-});
-
-function setCity(city) {
-  state.city = city;
-  elCityLabel.textContent = city;
-  hideModal();
-  render();
-}
-
-function renderCityLists(filter) {
-  const f = (filter || "").trim();
-  // popular
-  popularWrap.innerHTML = "";
-  POPULAR.forEach(c => {
-    if (f && !c.includes(f)) return;
-    const btn = document.createElement("div");
-    btn.className = "city-btn";
-    btn.textContent = c;
-    btn.addEventListener("click", () => setCity(c));
-    popularWrap.appendChild(btn);
-  });
-
-  // all cities (+ 全部)
-  const list = ["全部", ...ALL_CITIES].filter(c => !f || c.includes(f));
+function renderCityList(keyword){{
+  const kw = keyword.trim();
   cityList.innerHTML = "";
-  list.forEach(c => {
-    const item = document.createElement("div");
-    item.className = "city-item";
-    item.textContent = c;
-    item.addEventListener("click", () => setCity(c));
-    cityList.appendChild(item);
-  });
-}
 
-citySearch.addEventListener("input", (e) => {
-  renderCityLists(e.target.value);
-});
+  letters.forEach(L => {{
+    const arr = (cityGroups[L] || []).filter(c => !kw || c.includes(kw));
+    if(arr.length===0) return;
 
-// init
-renderCityLists("");
-render();
+    const h = document.createElement("div");
+    h.className = "grouphead";
+    h.id = "sec_"+L;
+    h.textContent = L;
+    cityList.appendChild(h);
+
+    arr.forEach(c => {{
+      const it = document.createElement("div");
+      it.className = "cityitem";
+      it.textContent = c;
+      it.onclick = () => setCity(c);
+      cityList.appendChild(it);
+    }});
+  }});
+
+  if(cityList.children.length===0){{
+    cityList.innerHTML = '<div class="empty">没有匹配的城市</div>';
+  }}
+}}
+
+openCity.onclick = openCityModal;
+closeCity.onclick = closeCityModal;
+cityModal.addEventListener("click", (e) => {{ if(e.target===cityModal) closeCityModal(); }});
+
+qEl.addEventListener("input", renderList);
+cityQ.addEventListener("input", () => renderCityList(cityQ.value));
+
+// initial
+cityLabel.textContent = currentCity;
+renderHot();
+buildIndex();
+renderList();
 </script>
 </body>
 </html>

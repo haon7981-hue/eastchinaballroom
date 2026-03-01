@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026年2月28日 江浙沪今日舞讯</title>
+    <title>2026年3月1日 江浙沪今日舞讯</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -73,7 +73,7 @@
                         <i class="fa-solid fa-music text-indigo-600 text-2xl"></i>
                         <div>
                             <div class="font-bold text-xl tracking-tight text-slate-900">今日舞讯</div>
-                            <div class="text-xs text-slate-500 -mt-1">2026.02.28 江浙沪</div>
+                            <div class="text-xs text-slate-500 -mt-1">2026.03.01 江浙沪</div>
                         </div>
                     </div>
                     <div class="text-right">
@@ -110,7 +110,7 @@
                 <div class="mb-6">
                     <div class="px-1 mb-3 flex items-center justify-between">
                         <span class="font-semibold text-slate-700 text-lg">全部城市</span>
-                        <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">共28城</span>
+                        <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">共27城</span>
                     </div>
                     
                     <div id="cityList" class="space-y-6"></div>
@@ -146,6 +146,16 @@
                 </div>
             </div>
             
+            <!-- Status Tabs -->
+            <div class="bg-white px-4 py-2 flex justify-around border-b border-slate-100 sticky top-[116px] z-40">
+                <button id="tabAll" onclick="setFilter('all')" class="py-2 px-4 text-sm font-medium text-slate-600 rounded-full bg-slate-100">全部</button>
+                <div class="relative">
+                    <button id="tabOpen" onclick="setFilter('open')" class="py-2 px-4 text-sm font-medium text-amber-600 rounded-full bg-amber-50">今日营业</button>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full"></div>
+                </div>
+                <button id="tabClosed" onclick="setFilter('closed')" class="py-2 px-4 text-sm font-medium text-slate-600 rounded-full bg-slate-100">今日停业</button>
+            </div>
+            
             <div class="px-4 py-5" id="hallContent">
                 <div id="hallList" class="space-y-4"></div>
             </div>
@@ -162,98 +172,102 @@
     <script>
         // ==================== 数据（完整来自用户最新Excel） ====================
         const venues = [
-            {city:"宜兴", hall:"蓝迪", time:"午场: 12:30-16:30 晚场: 18:30-00:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/7OWtqsUP17r"},
-            {city:"宜兴", hall:"蓝调", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/dFKXitv1Vj"},
-            {city:"宜兴", hall:"汇超舞厅", time:"午场: 12:30-17:00 晚场: 18:30-23:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/7BvLnBgiayj"},
-            {city:"苏州", hall:"丽花宫大舞厅", time:"08:00-22:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/6Oj59zhG9fSh"},
-            {city:"苏州", hall:"格菓美大舞厅", time:"09:30-22:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/9vHvb2Qm7jA"},
-            {city:"苏州", hall:"歌友会(导航链接获取通道)", time:"午场: 12:00-17:00 晚场: 18:30-23:00", allow:true, hot:true, remark:"近期举报较多，多家暂停营业", link:"https://t.me/suxiblackroombot"},
-            {city:"苏州", hall:"昆山茶吧", time:"午场: 13:00-17:00 晚场: 18:00-22:30", allow:true, hot:false, remark:"找不到地址请打电话 13338053429", link:"https://surl.amap.com/3jbZw5F19bqw"},
-            {city:"江阴", hall:"超级猴子", time:"午场: 12:30-17:00 晚场: 18:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/haHThGB1xf5x"},
-            {city:"常州", hall:"橙子酒吧(凯丽)", time:"午场: 12:30-17:00 晚场: 18:30-23:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/9lj0ghUH6nd"},
-            {city:"上海", hall:"乐轩音乐茶座", time:"13:00-23:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/9g18GtPW7Em"},
-            {city:"上海", hall:"西部交谊舞", time:"午场: 13:30-16:00 晚场: 19:30-21:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/SQzWAZegeJ"},
-            {city:"上海", hall:"曲阳交谊舞", time:"午场: 13:30-16:30 晚场: 18:30-20:45", allow:false, hot:false, remark:"", link:"https://surl.amap.com/2lW7bL91E9r4"},
-            {city:"丹阳", hall:"芭黎人歌舞厅", time:"午场: 13:00-17:00 晚场: 18:30-00:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/RIqTB3h4Jf"},
-            {city:"丹阳", hall:"鑫源歌舞厅", time:"午场: 13:00-17:00 晚场: 18:30-23:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r6YBudHR8Xx"},
-            {city:"句容", hall:"温格酒吧", time:"19:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/qcH9Wwl1xfO0"},
-            {city:"句容", hall:"艾莎音乐酒吧", time:"14:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r4Jo6xr1p2JQ"},
-            {city:"扬州", hall:"丽宝音乐酒吧", time:"13:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/2qhSUZCr1t7Gx"},
-            {city:"扬州", hall:"星眺小酒馆", time:"19:30-01:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/gyqV7dL26M9"},
-            {city:"扬州", hall:"顺达音乐酒馆", time:"13:00-02:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/8KVS1NA1x0my"},
-            {city:"仪征", hall:"盐都歌舞厅", time:"19:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/S0vxiZ1i7mZ"},
-            {city:"南通", hall:"丽莎歌舞厅", time:"13:00-00:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/9fiQb9I68D"},
-            {city:"南通", hall:"寻梦缘歌舞厅", time:"12:30-00:30", allow:false, hot:true, remark:"", link:"https://surl.amap.com/29RgvGI310V"},
-            {city:"南通", hall:"抖舞跳舞俱乐部", time:"12:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/Vdu1qB1o5gH"},
-            {city:"南通", hall:"卢米演艺酒吧", time:"12:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r0q597P76E3"},
-            {city:"南通", hall:"自由空间舞厅", time:"午场: 13:00-17:00 晚场: 19:00-24:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/fm5PpWV1c4NZ"},
-            {city:"南通", hall:"蒙纳戈娱乐", time:"13:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/2mZuySB5i0jU"},
-            {city:"南通", hall:"星鼎娱乐中心", time:"13:00-01:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/1mZJgkCN6xV"},
-            {city:"南通", hall:"启东铭鼎酒吧", time:"13:00-00:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/3zRI8Vs94Df"},
-            {city:"南通", hall:"通州玛莎嗨嗨", time:"13:30-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/VfuIXry6nI"},
-            {city:"泰州", hall:"简爱小酒馆", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/1x9GWuzvJ9kA"},
-            {city:"泰州", hall:"寻酒作乐小酒馆", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6uAEygW19glv"},
-            {city:"盐城", hall:"蓝堡酒吧", time:"18:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6aXuti2E152r5"},
-            {city:"盐城", hall:"星花歌舞厅", time:"18:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6ud3Rui63m"},
-            {city:"嘉兴", hall:"心悦舞厅", time:"12:00-00:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/3JIUU4tR1q0A1"},
-            {city:"嘉兴", hall:"情浓", time:"午场: 12:00-17:00 晚场: 18:00-23:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/3J1m6aCvKgWr"},
-            {city:"嘉兴", hall:"莲蓉", time:"12:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/3JvWj2tlf1cM"},
-            {city:"嘉兴", hall:"紫莎舞厅", time:"午场: 12:00-17:00 晚场: 18:00-23:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/3JHcw7t9k2Ig"},
-            {city:"嘉兴", hall:"金莎音乐吧", time:"12:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/8SdGgnQTaXD"},
-            {city:"嘉兴", hall:"嘉善乡下茶吧", time:"午场: 12:00-17:00 晚场: 18:30-23:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/8NDigcu1wgYE"},
-            {city:"桐乡", hall:"银河歌舞厅", time:"13:30-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/XcCt5U1h5Gi"},
-            {city:"桐乡", hall:"梦可迪", time:"午场: 12:00-16:30 晚场: 18:00-23:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6QzfcfOQ1oaPR"},
-            {city:"桐乡", hall:"红宝石", time:"午场: 12:00-17:00 晚场: 18:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6QSfUd9Gkcdf"},
-            {city:"桐乡", hall:"梦幻蝶蝶乐舞厅", time:"午场: 12:00-16:00 晚场: 18:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/8Tl6pP8R7OY"},
-            {city:"海宁", hall:"AJ音乐吧", time:"15:00-01:00", allow:true, hot:true, remark:"男女40元（全天，17:00前买一送一）", link:"https://surl.amap.com/8V6zhsO1B5TQ"},
-            {city:"海盐", hall:"夜色", time:"15:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/7QQqNjEQblA"},
-            {city:"杭州", hall:"富阳韵境", time:"17:00-00:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/WREHLA1rgVp"},
-            {city:"杭州", hall:"剑齿虎酒吧", time:"15:00-03:00", allow:false, hot:false, remark:"试营业免门票（正月初八～元宵节）", link:"https://surl.amap.com/1oTmjdz1jddD"},
-            {city:"杭州", hall:"七五舞厅", time:"14:00-01:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/5yl0tNMh7sT"},
-            {city:"杭州", hall:"右西茶吧", time:"14:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/t659rXjp1it"},
-            {city:"杭州", hall:"蓝波湾音乐酒吧", time:"14:00-02:00", allow:false, hot:false, remark:"低消40元（买一送一，女士免票，国潮赠票可用）", link:"https://surl.amap.com/btcQhRQ1q9o5"},
-            {city:"杭州", hall:"蓝玉娱乐会", time:"14:00-02:00", allow:true, hot:true, remark:"男士抵消40买一送一（女士免票）", link:"https://surl.amap.com/3mncJ6iJOaTH"},
-            {city:"杭州", hall:"临安魅舞音乐酒馆", time:"14:00-02:00", allow:false, hot:false, remark:"卡座模式，门票20", link:"https://surl.amap.com/gDsWLdrgaL4"},
-            {city:"杭州", hall:"富阳群众舞厅", time:"18:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/8wieCeN1d4hX"},
-            {city:"杭州", hall:"森米酒吧", time:"17:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6REgCMXy1A8El"},
-            {city:"杭州", hall:"夜色酒吧(YS)", time:"14:00-02:00", allow:false, hot:false, remark:"不可跳舞,抵消卷40元（女免）", link:"https://surl.amap.com/1EABEb4lsa4i"},
-            {city:"杭州", hall:"黑墙酒吧", time:"17:00-02:00", allow:false, hot:false, remark:"酒吧模式", link:"https://surl.amap.com/2pJZnLLJ177if"},
-            {city:"温州", hall:"浪花歌舞", time:"13:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/UwZPY97gxW"},
-            {city:"温州", hall:"龙湾浪花", time:"午场: 12:00-17:30 晚场: 18:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hqXo2j31n6pP"},
-            {city:"丽水", hall:"蓝傲", time:"19:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/fs8q8jnIf0W"},
-            {city:"义乌", hall:"迪迪k舞", time:"19:30-02:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/bv5l6DYwc6s"},
-            {city:"义乌", hall:"丽莎bar", time:"19:30-03:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/bvLW0kSybd2"},
-            {city:"衢州", hall:"摇一摇", time:"20:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/11ErgIUpl0MT"},
-            {city:"绍兴柯桥", hall:"逍遥音乐吧", time:"16:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/38Z0Y4wB1pebJ"},
-            {city:"绍兴柯桥", hall:"邂逅", time:"19:00-03:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/1HpkeQpTu9Te"},
-            {city:"绍兴柯桥", hall:"新正莎舞酒吧", time:"17:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/hiwZ3Lf1e4as"},
-            {city:"绍兴柯桥", hall:"蓝堡酒吧舞厅", time:"18:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/TYlZZPc70s"},
-            {city:"绍兴柯桥", hall:"芳华音乐酒吧", time:"19:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/U2KBF31h54l"},
-            {city:"绍兴柯桥", hall:"悦色酒吧", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/bxqeWyWx3SG"},
-            {city:"绍兴柯桥", hall:"飞悦舞厅", time:"18:00-05:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hbA4wa91Bd28"},
-            {city:"绍兴柯桥", hall:"春风十里音乐酒吧", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hdGQfFb1nauo"},
-            {city:"绍兴柯桥", hall:"蓝梦歌舞厅", time:"18:30-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/h7Oy9trr75w"},
-            {city:"金华", hall:"ACDC酒吧", time:"14:00-04:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/VYgPxdTrcOj"},
-            {city:"金华", hall:"金莎舞厅", time:"午场: 13:00-17:00 晚场: 18:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/WruMvHz109CV"},
-            {city:"台州", hall:"夜江楠舞厅", time:"午场: 13:00-16:30 晚场: 19:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hniTCUt1i5pD"},
-            {city:"宁波", hall:"乐8量贩KTV", time:"午场: 12:00-16:30 晚场: 18:30-23:30", allow:false, hot:true, remark:"", link:"https://surl.amap.com/gfd5zDz1m9v7"},
-            {city:"宁波", hall:"新节奏时尚量贩KTV", time:"午场: 12:00-17:00 晚场: 18:30-23:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/1nk3kliX44F"},
-            {city:"宁波", hall:"丰成娱乐", time:"13:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/ghWabAR167ut"},
-            {city:"宁波", hall:"康都舞厅", time:"午场: 12:00-16:00 晚场: 18:30-23:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/sSD7f7P12eNh"},
-            {city:"宁波", hall:"天潮娱乐", time:"18:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/fJ0xzAuM9af"},
-            {city:"宁波", hall:"丽莎舞厅", time:"午场: 12:30-17:00 晚场: 18:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/h5TXLDkgcpD"},
-            {city:"南京", hall:"相逢(金盏)", time:"13:00-02:00", allow:true, hot:true, remark:"晚上经常清场 一般22:00后会恢复", link:"https://surl.amap.com/2FiPCSop14gVn"},
-            {city:"南京", hall:"天涯", time:"10:00-02:00", allow:true, hot:true, remark:"晚上经常清场 一般22:00后会恢复", link:"https://surl.amap.com/fGKCYpc1AejP"},
-            {city:"南京", hall:"千幻", time:"18:00-02:00", allow:true, hot:false, remark:"卡座模式", link:"https://surl.amap.com/8Bu34JE1bHl"},
-            {city:"南京", hall:"散怀", time:"13:00-02:00", allow:false, hot:false, remark:"下午极不稳定，晚上9点以后会选择低调开门", link:"https://surl.amap.com/uhZ8Os580RJ"},
-            {city:"南京", hall:"后山音乐酒吧", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/cc5cuSNL0Wv"},
-            {city:"连云港", hall:"浪花音乐吧", time:"午场: 13:30-17:00 晚场: 19:30-01:00", allow:false, hot:false, remark:"万润商业街天桥二楼", link:"https://surl.amap.com/3wehBF012c3H"}
+            {city: '宜兴', hall: '蓝迪', time: '午场: 12:30-16:30 \n晚场: 18:30-00:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/7OWtqsUP17r', status: '营业'},
+            {city: '宜兴', hall: '蓝调', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/dFKXitv1Vj', status: '营业'},
+            {city: '宜兴', hall: '汇超舞厅', time: '午场: 12:30-17:00 \n晚场: 18:30-23:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/7BvLnBgiayj', status: '营业'},
+            {city: '苏州', hall: '丽花宫大舞厅', time: '08:00-22:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/6Oj59zhG9fSh', status: '营业'},
+            {city: '苏州', hall: '格菓美大舞厅', time: '09:30-22:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/9vHvb2Qm7jA', status: '停业'},
+            {city: '苏州', hall: '歌友会(导航链接获取通道)', time: '午场: 12:00-17:00\n晚场: 18:30-23:00', allow: true, hot: true, remark: '近期举报较多，多家暂停营业', link: 'https://t.me/suxiblackroombot', status: '营业'},
+            {city: '苏州', hall: '昆山茶吧', time: '午场: 13:00-17:00\n晚场: 18:00-22:30', allow: true, hot: false, remark: '找不到地址请打电话 13338053429', link: 'https://surl.amap.com/3jbZw5F19bqw', status: '营业'},
+            {city: '江阴', hall: '超级猴子', time: '午场: 12:30-17:00 \n晚场: 18:30-02:00', allow: false, hot: false, remark: '3月1号晚场恢复', link: 'https://surl.amap.com/haHThGB1xf5x', status: '营业'},
+            {city: '常州', hall: '橙子酒吧(凯丽)', time: '午场: 12:30-17:00 \n晚场: 18:30-23:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/9lj0ghUH6nd', status: '营业'},
+            {city: '常州', hall: '玖松娱乐(绮梦)', time: '午场: 12:30-16:30 \n晚场: 18:30-22:30', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/c3vuKN2n2cQ', status: '营业'},
+            {city: '上海', hall: '乐轩音乐茶座', time: '13:00-23:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/9g18GtPW7Em', status: '营业'},
+            {city: '上海', hall: '西部交谊舞', time: '午场: 13:30-16:00 \n晚场: 19:30-21:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/SQzWAZegeJ', status: '营业'},
+            {city: '上海', hall: '曲阳交谊舞', time: '午场: 13:30-16:30 \n晚场: 18:30-20:45', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/2lW7bL91E9r4', status: '营业'},
+            {city: '丹阳', hall: '芭黎人歌舞厅', time: '午场: 13:00-17:00\n晚场: 18:30-00:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/RIqTB3h4Jf', status: '营业'},
+            {city: '丹阳', hall: '鑫源歌舞厅', time: '午场: 13:00-17:00\n晚场: 18:30-23:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/r6YBudHR8Xx', status: '营业'},
+            {city: '句容', hall: '温格酒吧', time: '19:00-02:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/qcH9Wwl1xfO0', status: '营业'},
+            {city: '句容', hall: '艾莎音乐酒吧', time: '14:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/r4Jo6xr1p2JQ', status: '营业'},
+            {city: '扬州', hall: '俊美舞厅', time: '13:30-02:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/1miXuwwu2qc', status: '营业'},
+            {city: '扬州', hall: '星眺小酒馆', time: '19:30-01:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/gyqV7dL26M9', status: '营业'},
+            {city: '扬州', hall: '顺达音乐酒馆', time: '13:00-02:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/8KVS1NA1x0my', status: '营业'},
+            {city: '仪征', hall: '盐都歌舞厅', time: '19:30-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/S0vxiZ1i7mZ', status: '营业'},
+            {city: '南通', hall: '丽莎歌舞厅', time: '13:00-00:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/9fiQb9I68D', status: '营业'},
+            {city: '南通', hall: '寻梦缘歌舞厅', time: '12:30-00:30', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/29RgvGI310V', status: '营业'},
+            {city: '南通', hall: '抖舞跳舞俱乐部', time: '12:30-02:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/Vdu1qB1o5gH', status: '营业'},
+            {city: '南通', hall: '卢米演艺酒吧', time: '12:30-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/r0q597P76E3', status: '营业'},
+            {city: '南通', hall: '自由空间舞厅', time: '午场: 13:00-17:00 \n晚场: 19:00-24:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/fm5PpWV1c4NZ', status: '营业'},
+            {city: '南通', hall: '蒙纳戈娱乐', time: '13:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/2mZuySB5i0jU', status: '营业'},
+            {city: '南通', hall: '星鼎娱乐中心', time: '13:00-01:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/1mZJgkCN6xV', status: '营业'},
+            {city: '南通', hall: '启东铭鼎酒吧', time: '13:00-00:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/3zRI8Vs94Df', status: '营业'},
+            {city: '南通', hall: '通州玛莎嗨嗨', time: '13:30-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/VfuIXry6nI', status: '营业'},
+            {city: '泰州', hall: '简爱小酒馆', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/1x9GWuzvJ9kA', status: '营业'},
+            {city: '泰州', hall: '寻酒作乐小酒馆', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/6uAEygW19glv', status: '营业'},
+            {city: '盐城', hall: '蓝堡酒吧', time: '18:30-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/6aXuti2E152r5', status: '营业'},
+            {city: '盐城', hall: '星花歌舞厅', time: '18:00-01:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/6ud3Rui63m', status: '营业'},
+            {city: '嘉兴', hall: '心悦舞厅', time: '12:00-00:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/3JIUU4tR1q0A1', status: '营业'},
+            {city: '嘉兴', hall: '情浓', time: '午场: 12:00-17:00 \n晚场: 18:00-23:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/3J1m6aCvKgWr', status: '营业'},
+            {city: '嘉兴', hall: '莲蓉', time: '12:00-02:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/3JvWj2tlf1cM', status: '营业'},
+            {city: '嘉兴', hall: '紫莎舞厅', time: '午场: 12:00-17:00 \n晚场: 18:00-23:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/3JHcw7t9k2Ig', status: '营业'},
+            {city: '嘉兴', hall: '金莎音乐吧', time: '12:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/8SdGgnQTaXD', status: '营业'},
+            {city: '嘉兴', hall: '嘉善乡下茶吧(天业)', time: '午场: 12:00-17:00 \n晚场: 18:00-23:30', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/8NDigcu1wgYE', status: '营业'},
+            {city: '桐乡', hall: '银河歌舞厅', time: '13:30-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/XcCt5U1h5Gi', status: '营业'},
+            {city: '桐乡', hall: '梦可迪', time: '午场: 12:00-16:30 \n晚场: 18:00-23:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/6QzfcfOQ1oaPR', status: '营业'},
+            {city: '桐乡', hall: '红宝石', time: '午场: 12:00-17:00 \n晚场: 18:00-01:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/6QSfUd9Gkcdf', status: '营业'},
+            {city: '桐乡', hall: '梦幻蝶蝶乐舞厅', time: '午场: 12:00-16:00 \n晚场: 18:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/8Tl6pP8R7OY', status: '停业'},
+            {city: '海宁', hall: 'AJ音乐吧', time: '15:00-01:00', allow: true, hot: true, remark: '男女40元（全天，17:00前买一送一）', link: 'https://surl.amap.com/8V6zhsO1B5TQ', status: '停业'},
+            {city: '海盐', hall: '夜色', time: '15:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/7QQqNjEQblA', status: '停业'},
+            {city: '杭州', hall: '富阳韵境', time: '17:00-00:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/WREHLA1rgVp', status: '营业'},
+            {city: '杭州', hall: '心艺心茶吧', time: '13:00-01:00', allow: false, hot: false, remark: '3月1日下午清场', link: 'https://surl.amap.com/JuWgho11d5z', status: '停业'},
+            {city: '杭州', hall: '新鑫食蒲(好久不见)', time: '13:00-01:00', allow: true, hot: true, remark: '2月28日~3月3日暂停营业4天', link: 'https://surl.amap.com/3gy21RI91ncLO', status: '停业'},
+            {city: '杭州', hall: '剑齿虎酒吧', time: '15:00-03:00', allow: false, hot: false, remark: '试营业免门票（正月初八～元宵节）', link: 'https://surl.amap.com/1oTmjdz1jddD', status: '营业'},
+            {city: '杭州', hall: '七五舞厅', time: '14:00-01:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/5yl0tNMh7sT', status: '停业'},
+            {city: '杭州', hall: '右西茶吧', time: '14:00-01:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/t659rXjp1it', status: '营业'},
+            {city: '杭州', hall: '蓝波湾音乐酒吧', time: '14:00-02:00', allow: true, hot: true, remark: '低消40元（买一送一，女士免票，国潮赠票可用）', link: 'https://surl.amap.com/btcQhRQ1q9o5', status: '营业'},
+            {city: '杭州', hall: '蓝玉娱乐会', time: '14:00-02:00', allow: true, hot: true, remark: '男士抵消40买一送一（女士免票）', link: 'https://surl.amap.com/3mncJ6iJOaTH', status: '营业'},
+            {city: '杭州', hall: '临安魅舞音乐酒馆', time: '14:00-02:00', allow: false, hot: false, remark: '卡座模式，门票20', link: 'https://surl.amap.com/gDsWLdrgaL4', status: '营业'},
+            {city: '杭州', hall: '富阳群众舞厅', time: '18:00-01:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/8wieCeN1d4hX', status: '营业'},
+            {city: '杭州', hall: '森米酒吧', time: '17:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/6REgCMXy1A8El', status: '营业'},
+            {city: '杭州', hall: '夜色酒吧(YS)', time: '14:00-02:00', allow: false, hot: false, remark: '不可跳舞,抵消卷40元（女免）', link: 'https://surl.amap.com/1EABEb4lsa4i', status: '停业'},
+            {city: '杭州', hall: '黑墙酒吧', time: '17:00-02:00', allow: false, hot: false, remark: '酒吧模式', link: 'https://surl.amap.com/2pJZnLLJ177if', status: '营业'},
+            {city: '温州', hall: '浪花歌舞', time: '13:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/UwZPY97gxW', status: '营业'},
+            {city: '温州', hall: '龙湾浪花', time: '午场: 12:00-17:30\n晚场: 18:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/hqXo2j31n6pP', status: '营业'},
+            {city: '丽水', hall: '蓝傲', time: '19:00-02:00', allow: true, hot: true, remark: '', link: 'https://surl.amap.com/fs8q8jnIf0W', status: '营业'},
+            {city: '义乌', hall: '迪迪k舞', time: '19:30-02:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/bv5l6DYwc6s', status: '营业'},
+            {city: '义乌', hall: '丽莎bar', time: '19:30-03:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/bvLW0kSybd2', status: '营业'},
+            {city: '衢州', hall: '摇一摇', time: '20:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/11ErgIUpl0MT', status: '营业'},
+            {city: '绍兴柯桥', hall: '逍遥音乐吧', time: '16:00-02:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/38Z0Y4wB1pebJ', status: '营业'},
+            {city: '绍兴柯桥', hall: '邂逅', time: '19:00-03:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/1HpkeQpTu9Te', status: '营业'},
+            {city: '绍兴柯桥', hall: '新正莎舞酒吧', time: '17:00-02:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/hiwZ3Lf1e4as', status: '营业'},
+            {city: '绍兴柯桥', hall: '蓝堡酒吧舞厅', time: '18:30-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/TYlZZPc70s', status: '营业'},
+            {city: '绍兴柯桥', hall: '芳华音乐酒吧', time: '19:00-01:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/U2KBF31h54l', status: '营业'},
+            {city: '绍兴柯桥', hall: '悦色酒吧', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/bxqeWyWx3SG', status: '营业'},
+            {city: '绍兴柯桥', hall: '飞悦舞厅', time: '18:00-05:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/hbA4wa91Bd28', status: '营业'},
+            {city: '绍兴柯桥', hall: '春风十里音乐酒吧', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/hdGQfFb1nauo', status: '营业'},
+            {city: '绍兴柯桥', hall: '蓝梦歌舞厅', time: '18:30-01:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/h7Oy9trr75w', status: '营业'},
+            {city: '金华', hall: 'ACDC酒吧', time: '14:00-04:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/VYgPxdTrcOj', status: '营业'},
+            {city: '金华', hall: '金莎舞厅', time: '午场: 13:00-17:00 \n晚场: 18:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/WruMvHz109CV', status: '营业'},
+            {city: '台州', hall: '夜江楠舞厅', time: '午场: 13:00-16:30 \n晚场: 19:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/hniTCUt1i5pD', status: '营业'},
+            {city: '宁波', hall: '乐8量贩KTV', time: '午场: 12:00-16:30 \n晚场: 18:30-23:30', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/gfd5zDz1m9v7', status: '营业'},
+            {city: '宁波', hall: '新节奏时尚量贩KTV', time: '午场: 12:00-17:00\n晚场: 18:30-23:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/1nk3kliX44F', status: '营业'},
+            {city: '宁波', hall: '丰成娱乐', time: '13:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/ghWabAR167ut', status: '营业'},
+            {city: '宁波', hall: '康都舞厅', time: '午场: 12:00-16:00\n晚场: 18:30-23:00', allow: true, hot: false, remark: '', link: 'https://surl.amap.com/sSD7f7P12eNh', status: '营业'},
+            {city: '宁波', hall: '天潮娱乐', time: ' 18:00-02:00', allow: false, hot: true, remark: '', link: 'https://surl.amap.com/fJ0xzAuM9af', status: '营业'},
+            {city: '宁波', hall: '丽莎舞厅', time: '午场: 12:30-17:00\n晚场: 18:00-00:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/h5TXLDkgcpD', status: '营业'},
+            {city: '南京', hall: '相逢(金盏)', time: '13:00-02:00', allow: true, hot: true, remark: '', link: 'ttps://surl.amap.com/2FiPCSop14gVn', status: '停业'},
+            {city: '南京', hall: '天涯', time: '10:00-02:00', allow: true, hot: true, remark: '晚上经常清场 一般22:00后会恢复', link: 'https://surl.amap.com/fGKCYpc1AejP', status: '营业'},
+            {city: '南京', hall: '千幻', time: '18:00-02:00', allow: true, hot: false, remark: '卡座模式', link: 'https://surl.amap.com/8Bu34JE1bHl', status: '营业'},
+            {city: '南京', hall: 'M9音乐餐吧', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/pW3hPgN153tc', status: '营业'},
+            {city: '南京', hall: '后山音乐酒吧（FOX)', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/cc5cuSNL0Wv', status: '营业'},
+            {city: '南京', hall: '清悦小酒馆', time: '19:00-02:00', allow: false, hot: false, remark: '', link: 'https://surl.amap.com/1Bzsh981hcIo', status: '营业'},
+            {city: '连云港', hall: '浪花音乐吧', time: '午场: 13:30-17:00\n晚场: 19:30-01:00', allow: false, hot: false, remark: '万润商业街天桥二楼', link: 'https://surl.amap.com/3wehBF012c3H', status: '营业'}
         ];
         
         // 热门城市（保持不变）
         const hotCities = ["上海", "苏州", "杭州", "南京", "南通", "嘉兴", "宁波", "常州", "扬州", "义乌", "温州", "绍兴柯桥"];
         
-        // 字母分组（已同步最新城市，新增仪征）
+        // 字母分组（已同步最新城市）
         const cityGroups = {
             "C": ["常州"],
             "D": ["丹阳"],
@@ -269,8 +283,9 @@
         };
         
         let currentCity = "";
+        let currentFilter = 'all';
         
-        // Tailwind script 已加载，初始化（以下所有函数和逻辑与你附件完全一致，未做任何改动）
+        // Tailwind script 已加载，初始化
         function initTailwind() {
             const hotGrid = document.getElementById("hotCitiesGrid");
             hotGrid.innerHTML = hotCities.map(city => `
@@ -302,6 +317,7 @@
             });
             cityListEl.innerHTML = html;
             
+            // 城市搜索
             document.getElementById("citySearch").addEventListener("input", (e) => {
                 const term = e.target.value.trim().toLowerCase();
                 const buttons = document.querySelectorAll("#cityList button");
@@ -314,9 +330,11 @@
         
         function selectCity(city) {
             currentCity = city;
+            currentFilter = 'all'; // Reset filter on city change
             document.getElementById("cityView").classList.add("hidden");
             document.getElementById("hallView").classList.remove("hidden");
             document.getElementById("currentCityTitle").textContent = city;
+            updateTabs();
             renderHalls();
         }
         
@@ -326,18 +344,48 @@
             document.getElementById("hallSearch").value = "";
         }
         
-        function renderHalls(filter = "") {
+        function setFilter(filter) {
+            currentFilter = filter;
+            updateTabs();
+            renderHalls(document.getElementById("hallSearch").value);
+        }
+        
+        function updateTabs() {
+            document.getElementById("tabAll").classList.toggle("bg-amber-50", currentFilter === 'all');
+            document.getElementById("tabAll").classList.toggle("text-amber-600", currentFilter === 'all');
+            document.getElementById("tabAll").classList.toggle("bg-slate-100", currentFilter !== 'all');
+            document.getElementById("tabAll").classList.toggle("text-slate-600", currentFilter !== 'all');
+            
+            document.getElementById("tabOpen").classList.toggle("bg-amber-50", currentFilter === 'open');
+            document.getElementById("tabOpen").classList.toggle("text-amber-600", currentFilter === 'open');
+            document.getElementById("tabOpen").classList.toggle("bg-slate-100", currentFilter !== 'open');
+            document.getElementById("tabOpen").classList.toggle("text-slate-600", currentFilter !== 'open');
+            
+            document.getElementById("tabClosed").classList.toggle("bg-amber-50", currentFilter === 'closed');
+            document.getElementById("tabClosed").classList.toggle("text-amber-600", currentFilter === 'closed');
+            document.getElementById("tabClosed").classList.toggle("bg-slate-100", currentFilter !== 'closed');
+            document.getElementById("tabClosed").classList.toggle("text-slate-600", currentFilter !== 'closed');
+        }
+        
+        function renderHalls(searchFilter = "") {
             const container = document.getElementById("hallList");
             container.innerHTML = "";
             
-            const filteredVenues = venues
+            let filteredVenues = venues
                 .filter(v => v.city === currentCity)
                 .filter(v => {
-                    if (!filter) return true;
-                    const term = filter.toLowerCase();
+                    if (searchFilter === "") return true;
+                    const term = searchFilter.toLowerCase();
                     return v.hall.toLowerCase().includes(term) || 
                            v.time.toLowerCase().includes(term) ||
                            (v.remark && v.remark.toLowerCase().includes(term));
+                })
+                .filter(v => {
+                    const status = v.status || '营业';
+                    if (currentFilter === 'all') return true;
+                    if (currentFilter === 'open') return status === '营业';
+                    if (currentFilter === 'closed') return status === '停业';
+                    return true;
                 });
             
             if (filteredVenues.length === 0) {
@@ -359,17 +407,27 @@
                     </div>
                 ` : "";
                 
+                const status = v.status || '营业';
+                let statusClass = 'bg-emerald-500';
+                let statusText = '营业中';
+                let cardExtraClass = '';
+                if (status === '停业') {
+                    statusClass = 'bg-gray-500';
+                    statusText = '暂停营业';
+                    cardExtraClass = 'opacity-70';
+                }
+                
                 const cardHTML = `
-                    <div class="hall-card bg-white rounded-3xl overflow-hidden border border-slate-100">
+                    <div class="hall-card bg-white rounded-3xl overflow-hidden border border-slate-100 ${cardExtraClass}">
                         <div class="px-5 pt-5 pb-4">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center gap-3">
                                     <div class="text-2xl font-bold text-slate-900">${v.hall}</div>
                                     <div class="flex gap-1">${dragon}${fire}</div>
                                 </div>
-                                <div class="bg-emerald-500 text-white text-[10px] font-medium px-3 py-1 rounded-2xl flex items-center gap-1">
+                                <div class="${statusClass} text-white text-[10px] font-medium px-3 py-1 rounded-2xl flex items-center gap-1">
                                     <i class="fa-solid fa-circle text-[8px]"></i>
-                                    营业中
+                                    ${statusText}
                                 </div>
                             </div>
                             
@@ -398,8 +456,12 @@
             renderHalls(filter);
         }
         
+        // 初始化
         window.onload = function() {
             initTailwind();
+            
+            // 默认打开第一个热门城市演示（可删除）
+            // selectCity("南通");
         };
     </script>
 </body>

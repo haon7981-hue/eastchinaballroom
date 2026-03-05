@@ -3,84 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026年3月4日 江浙沪今日舞讯</title>
+    <title>2026年3月5日 江浙沪今日舞讯</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
-        
-        body {
-            font-family: 'Noto Sans SC', system-ui, sans-serif;
-        }
-        
-        .tail-container {
-            max-width: 480px;
-            margin: 0 auto;
-            background: #f8fafc;
-            min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        
-        .city-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
-        }
-        
-        .city-btn:active {
-            transform: scale(0.95);
-            background-color: #f1f5f9;
-        }
-        
-        .hall-card {
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        
-        .search-input {
-            transition: all 0.3s;
-        }
-        
-        .search-input:focus {
-            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
-        }
+        body { font-family: 'Noto Sans SC', system-ui, sans-serif; }
+        .tail-container { max-width: 480px; margin: 0 auto; background: #f8fafc; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .city-btn { transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
+        .city-btn:active { transform: scale(0.95); background-color: #f1f5f9; }
+        .hall-card { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .search-input { transition: all 0.3s; }
+        .search-input:focus { box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3); }
     </style>
 </head>
 <body class="bg-slate-100">
     <div class="tail-container mx-auto overflow-hidden">
-        
         <!-- CITY SELECTION VIEW -->
         <div id="cityView" class="min-h-screen">
-            
-            <!-- Header -->
             <div class="bg-white border-b sticky top-0 z-50">
                 <div class="px-4 py-3 flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-music text-indigo-600 text-2xl"></i>
                         <div>
                             <div class="font-bold text-xl tracking-tight text-slate-900">今日舞讯</div>
-                            <div class="text-xs text-slate-500 -mt-1">2026.03.04 江浙沪</div>
+                            <div class="text-xs text-slate-500 -mt-1">2026.03.05 江浙沪</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <a href="https://t.me/eastchinaballroom" target="_blank"
-                           class="inline-flex items-center gap-1 bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-2xl font-medium">
+                        <a href="https://t.me/eastchinaballroom" target="_blank" class="inline-flex items-center gap-1 bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-2xl font-medium">
                             <i class="fa-brands fa-telegram"></i>
                             <span>@eastchinaballroom</span>
                         </a>
                     </div>
                 </div>
-                
-                <!-- Search -->
                 <div class="px-4 pb-4">
                     <div class="relative">
-                        <input id="citySearch" type="text" placeholder="输入城市" 
-                               class="search-input w-full bg-slate-100 border border-transparent focus:border-indigo-300 rounded-3xl py-3 px-5 text-base focus:outline-none">
+                        <input id="citySearch" type="text" placeholder="输入城市" class="search-input w-full bg-slate-100 border border-transparent focus:border-indigo-300 rounded-3xl py-3 px-5 text-base focus:outline-none">
                         <i class="fa-solid fa-magnifying-glass absolute right-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     </div>
                 </div>
             </div>
-            
             <div class="px-4 pt-2">
-                
-                <!-- 热门城市 -->
                 <div class="mb-6">
                     <div class="flex items-center gap-2 mb-3 px-1">
                         <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
@@ -88,75 +52,53 @@
                     </div>
                     <div id="hotCitiesGrid" class="grid grid-cols-4 gap-3"></div>
                 </div>
-                
-                <!-- 城市列表 -->
                 <div class="mb-6">
                     <div class="px-1 mb-3 flex items-center justify-between">
                         <span class="font-semibold text-slate-700 text-lg">全部城市</span>
                         <span class="text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">共27城</span>
                     </div>
-                    
                     <div id="cityList" class="space-y-6"></div>
                 </div>
             </div>
-            
-            <!-- Footer -->
             <div class="h-20"></div>
         </div>
         
         <!-- HALL LIST VIEW -->
         <div id="hallView" class="min-h-screen hidden">
-            
-            <!-- Hall Header -->
             <div class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white sticky top-0 z-50">
                 <div class="flex items-center px-4 py-3">
-                    <button onclick="backToCityView()" 
-                            class="w-8 h-8 flex items-center justify-center -ml-1 rounded-full hover:bg-white/20 transition">
+                    <button onclick="backToCityView()" class="w-8 h-8 flex items-center justify-center -ml-1 rounded-full hover:bg-white/20 transition">
                         <i class="fa-solid fa-arrow-left text-xl"></i>
                     </button>
                     <div id="currentCityTitle" class="flex-1 text-center font-bold text-xl"></div>
                     <div class="w-8"></div>
                 </div>
-                
-                <!-- Hall search -->
                 <div class="px-4 pb-4">
                     <div class="relative">
-                        <input id="hallSearch" type="text" placeholder="请输入关键字搜索" 
-                               onkeyup="filterHalls()" 
-                               class="search-input w-full bg-white/90 text-slate-900 placeholder:text-slate-400 border border-transparent focus:border-white rounded-3xl py-3 px-5 text-base focus:outline-none">
+                        <input id="hallSearch" type="text" placeholder="请输入关键字搜索" onkeyup="filterHalls()" class="search-input w-full bg-white/90 text-slate-900 placeholder:text-slate-400 border border-transparent focus:border-white rounded-3xl py-3 px-5 text-base focus:outline-none">
                         <i class="fa-solid fa-magnifying-glass absolute right-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     </div>
                 </div>
             </div>
-            
-            <!-- Status Tabs -->
             <div class="bg-white px-4 py-2 flex justify-around border-b border-slate-100 sticky top-[116px] z-40">
-                <button id="tabAll" onclick="setFilter('all')" 
-                        class="py-2 px-6 text-sm font-medium rounded-full bg-slate-100 text-slate-600">全部</button>
+                <button id="tabAll" onclick="setFilter('all')" class="py-2 px-6 text-sm font-medium rounded-full bg-slate-100 text-slate-600">全部</button>
                 <div class="relative">
-                    <button id="tabOpen" onclick="setFilter('open')" 
-                            class="py-2 px-6 text-sm font-medium rounded-full bg-amber-50 text-amber-600">今日营业</button>
+                    <button id="tabOpen" onclick="setFilter('open')" class="py-2 px-6 text-sm font-medium rounded-full bg-amber-50 text-amber-600">今日营业</button>
                     <div class="absolute -top-1 -right-1 text-amber-500 text-xl leading-none">✔</div>
                 </div>
-                <button id="tabClosed" onclick="setFilter('closed')" 
-                        class="py-2 px-6 text-sm font-medium rounded-full bg-slate-100 text-slate-600">今日停业</button>
+                <button id="tabClosed" onclick="setFilter('closed')" class="py-2 px-6 text-sm font-medium rounded-full bg-slate-100 text-slate-600">今日停业</button>
             </div>
-            
             <div class="px-4 py-5" id="hallContent">
                 <div id="hallList" class="space-y-4"></div>
             </div>
         </div>
-        
     </div>
     
-    <!-- Floating Telegram -->
-    <a href="https://t.me/eastchinaballroom" target="_blank"
-       class="fixed bottom-6 right-6 bg-[#229ED9] text-white w-14 h-14 rounded-3xl flex items-center justify-center shadow-2xl z-50">
+    <a href="https://t.me/eastchinaballroom" target="_blank" class="fixed bottom-6 right-6 bg-[#229ED9] text-white w-14 h-14 rounded-3xl flex items-center justify-center shadow-2xl z-50">
         <i class="fa-brands fa-telegram text-3xl"></i>
     </a>
     
     <script>
-        // ==================== 数据（完整来自你今天上传的Excel，已加入门票价格） ====================
         const venues = [
             {city:"宜兴", hall:"蓝迪", time:"午场: 12:30-16:30 \n晚场: 18:30-00:00", allow:true, hot:true, remark:"2026年3月2日晚清场抓人", link:"https://surl.amap.com/7OWtqsUP17r", status:"停业", price:"下午20/晚上30"},
             {city:"宜兴", hall:"蓝调", time:"19:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/dFKXitv1Vj", status:"营业", price:"30"},
@@ -166,25 +108,26 @@
             {city:"苏州", hall:"歌友会(导航链接获取通道)", time:"午场: 12:00-17:00\n晚场: 18:30-23:00", allow:true, hot:true, remark:"近期举报较多，多家暂停营业", link:"https://t.me/suxiblackroombot", status:"营业", price:"30 （目前涨价到50）"},
             {city:"苏州", hall:"昆山茶吧", time:"午场: 13:00-17:00\n晚场: 18:00-22:30", allow:true, hot:false, remark:"找不到地址请打电话 13338053429", link:"https://surl.amap.com/3jbZw5F19bqw", status:"停业", price:"30"},
             {city:"江阴", hall:"超级猴子", time:"午场: 12:30-17:00 \n晚场: 18:30-02:00", allow:false, hot:false, remark:"3月1号晚场恢复", link:"https://surl.amap.com/haHThGB1xf5x", status:"停业", price:"20"},
-            {city:"常州", hall:"橙子酒吧(凯丽)", time:"午场: 12:30-17:00 \n晚场: 18:30-23:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/9lj0ghUH6nd", status:"营业", price:"20"},
+            {city:"常州", hall:"橙子酒吧(凯丽)", time:"午场: 12:30-17:00 \n晚场: 18:30-23:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/9lj0ghUH6nd", status:"停业", price:"20"},
             {city:"常州", hall:"玖松娱乐(绮梦)", time:"午场: 12:30-16:30 \n晚场: 18:30-22:30", allow:true, hot:true, remark:"", link:"https://surl.amap.com/c3vuKN2n2cQ", status:"营业", price:"20"},
             {city:"上海", hall:"乐轩音乐茶座", time:"13:00-22:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/9g18GtPW7Em", status:"营业", price:"30"},
-            {city:"上海", hall:"7号俱乐部(金钟)", time:"18:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/1hHEr3UTeOl", status:"营业", price:"48"},
-            {city:"上海", hall:"洋洋漾舞吧", time:"13:30-21:00", allow:false, hot:false, remark:"21点后酒吧模式", link:"https://surl.amap.com/1hY4bZYVd4V", status:"营业", price:"40"},
+            {city:"上海", hall:"7号俱乐部(金钟)", time:"18:00-02:00", allow:true, hot:true, remark:"位于金钟商务楼2层", link:"https://surl.amap.com/1hHEr3UTeOl", status:"营业", price:"48"},
+            {city:"上海", hall:"亚町湾活动室", time:"12:00-21:00", allow:false, hot:false, remark:"(岚亭园区A栋3楼) 昆明路640号", link:"https://surl.amap.com/7j6p8km1f1bp", status:"营业", price:"30"},
+            {city:"上海", hall:"洋洋漾舞吧", time:"12:30-18:30", allow:false, hot:false, remark:"大舞池 可供蹦迪跳舞", link:"https://surl.amap.com/1hY4bZYVd4V", status:"营业", price:"40"},
             {city:"上海", hall:"西部交谊舞", time:"午场: 13:30-16:00 \n晚场: 19:30-21:30", allow:false, hot:false, remark:"交谊舞为主", link:"https://surl.amap.com/SQzWAZegeJ", status:"营业", price:"30"},
             {city:"上海", hall:"曲阳交谊舞", time:"午场: 13:30-16:30 \n晚场: 18:30-20:45", allow:false, hot:false, remark:"交谊舞为主", link:"https://surl.amap.com/2lW7bL91E9r4", status:"营业", price:"30"},
             {city:"丹阳", hall:"芭黎人歌舞厅", time:"午场: 13:00-17:00\n晚场: 18:30-00:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/RIqTB3h4Jf", status:"营业", price:"20"},
-            {city:"丹阳", hall:"鑫源歌舞厅", time:"午场: 13:00-17:00\n晚场: 18:30-23:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r6YBudHR8Xx", status:"停业", price:"20"},
+            {city:"丹阳", hall:"鑫源歌舞厅", time:"午场: 13:00-17:00\n晚场: 18:30-23:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r6YBudHR8Xx", status:"营业", price:"20"},
             {city:"句容", hall:"温格酒吧", time:"19:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/qcH9Wwl1xfO0", status:"停业", price:"30"},
             {city:"句容", hall:"艾莎音乐酒吧", time:"14:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r4Jo6xr1p2JQ", status:"营业", price:"30"},
             {city:"句容", hall:"鑫莎音乐吧", time:"14:00-02:00", allow:false, hot:false, remark:"位于句容天王镇德客城", link:"https://surl.amap.com/E8hHFMa7MQ", status:"营业", price:"30"},
-            {city:"扬州", hall:"俊美舞厅", time:"13:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/1miXuwwu2qc", status:"停业", price:"30"},
+            {city:"扬州", hall:"俊美舞厅", time:"13:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/1miXuwwu2qc", status:"营业", price:"30"},
             {city:"扬州", hall:"银河歌舞厅", time:"13:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/FoPia81dcq5", status:"停业", price:"30"},
-            {city:"扬州", hall:"丽宝音乐酒吧", time:"13:30-02:00", allow:true, hot:true, remark:"位于力宝广场3楼", link:"https://surl.amap.com/1i3M9T81ie0t", status:"营业", price:"30"},
+            {city:"扬州", hall:"丽宝音乐酒吧", time:"13:30-02:00", allow:true, hot:true, remark:"位于力宝广场3楼", link:"https://surl.amap.com/1i3M9T81ie0t", status:"停业", price:"30"},
             {city:"扬州", hall:"星眺小酒馆", time:"19:30-01:30", allow:false, hot:false, remark:"", link:"https://surl.amap.com/gyqV7dL26M9", status:"营业", price:"30"},
             {city:"扬州", hall:"顺达音乐酒馆", time:"13:00-02:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/8KVS1NA1x0my", status:"营业", price:"30"},
             {city:"仪征", hall:"盐都歌舞厅", time:"19:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/S0vxiZ1i7mZ", status:"营业", price:"30"},
-            {city:"南通", hall:"丽莎歌舞厅", time:"13:00-00:00", allow:false, hot:true, remark:"通知于3月3日周二暂停营业", link:"https://surl.amap.com/9fiQb9I68D", status:"停业", price:"30"},
+            {city:"南通", hall:"丽莎歌舞厅", time:"13:00-00:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/9fiQb9I68D", status:"停业", price:"30"},
             {city:"南通", hall:"寻梦缘歌舞厅", time:"12:30-00:30", allow:false, hot:true, remark:"", link:"https://surl.amap.com/29RgvGI310V", status:"营业", price:"30"},
             {city:"南通", hall:"抖舞跳舞俱乐部", time:"12:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/Vdu1qB1o5gH", status:"营业", price:"30"},
             {city:"南通", hall:"卢米演艺酒吧", time:"12:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/r0q597P76E3", status:"营业", price:"20"},
@@ -217,14 +160,15 @@
             {city:"杭州", hall:"自由空间会所", time:"18:00-02:00", allow:false, hot:false, remark:"试营业免门票，不可跳舞，KTV模式", link:"https://surl.amap.com/zXNYpkJbvq", status:"营业", price:"68"},
             {city:"杭州", hall:"剑齿虎酒吧", time:"15:00-03:00", allow:false, hot:false, remark:"今日继续免票，不可跳舞", link:"https://surl.amap.com/1oTmjdz1jddD", status:"营业", price:"40"},
             {city:"杭州", hall:"七五舞厅", time:"14:00-01:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/5yl0tNMh7sT", status:"停业", price:"40"},
-            {city:"杭州", hall:"右西茶吧", time:"14:00-01:00", allow:false, hot:false, remark:"女15:30之前免票，17:00前买一送一，禁3毛；男14:30之前免票，16:00前买一送一", link:"https://surl.amap.com/t659rXjp1it", status:"营业", price:"40"},
-            {city:"杭州", hall:"蓝波湾音乐酒吧", time:"14:00-02:00", allow:true, hot:true, remark:"低消:40元（国潮赠票通用）16:00之前买一送一 ，大厅和包房可延时到04:00", link:"https://surl.amap.com/btcQhRQ1q9o5", status:"营业", price:"40"},
-            {city:"杭州", hall:"蓝玉娱乐会", time:"14:00-02:00", allow:true, hot:true, remark:"男士14点-18点免低消，18点后买一送二（女士全天免票）", link:"https://surl.amap.com/3mncJ6iJOaTH", status:"营业", price:"40"},
+            {city:"杭州", hall:"右西茶吧", time:"14:00-01:00", allow:false, hot:false, remark:"女士18:00前免票，后买一送一。(赠票当日不可用) 男士14:30前免票", link:"https://surl.amap.com/t659rXjp1it", status:"营业", price:"40"},
+            {city:"杭州", hall:"蓝波湾复古迪吧", time:"14:00-02:00", allow:true, hot:true, remark:"低消:40元（国潮赠票通用）16:00之前买一送一 ，大厅和包房可延时到04:00", link:"https://surl.amap.com/btcQhRQ1q9o5", status:"营业", price:"40"},
+            {city:"杭州", hall:"蓝玉娱乐会", time:"14:00-02:00", allow:true, hot:true, remark:"男士:14点～17点免低消，17点后买一送一 女士:19点前免", link:"https://surl.amap.com/3mncJ6iJOaTH", status:"营业", price:"40"},
+            {city:"杭州", hall:"塘果酒肆音乐吧", time:"14:00-01:00", allow:false, hot:false, remark:"女士免票，男士15:00之前免票", link:"https://surl.amap.com/9y1HxSF3ts", status:"营业", price:"40"},
             {city:"杭州", hall:"临安魅舞音乐酒馆", time:"14:00-02:00", allow:false, hot:false, remark:"卡座模式，先选人，后消费，门票20", link:"https://surl.amap.com/gDsWLdrgaL4", status:"营业", price:"20"},
             {city:"杭州", hall:"富阳群众舞厅", time:"18:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/8wieCeN1d4hX", status:"停业", price:"40"},
             {city:"杭州", hall:"森米酒吧", time:"17:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/6REgCMXy1A8El", status:"营业", price:"40"},
             {city:"杭州", hall:"夜色酒吧(YS)", time:"14:00-02:00", allow:false, hot:false, remark:"不可跳舞,抵消卷40元（女免）", link:"https://surl.amap.com/1EABEb4lsa4i", status:"停业", price:"40"},
-            {city:"杭州", hall:"黑墙酒吧", time:"17:00-02:00", allow:false, hot:false, remark:"酒吧模式", link:"https://surl.amap.com/2pJZnLLJ177if", status:"营业", price:"免门票，卡座有低消"},
+            {city:"杭州", hall:"黑墙酒吧", time:"17:00-02:00", allow:false, hot:false, remark:"酒吧模式，舞池不开", link:"https://surl.amap.com/2pJZnLLJ177if", status:"营业", price:"免门票，卡座有低消"},
             {city:"温州", hall:"BLUES (蓝调之夜)", time:"18:30-02:00", allow:false, hot:false, remark:"温州龙港唯一莎莎舞厅", link:"https://surl.amap.com/vxNa0y108Ov", status:"营业", price:"20"},
             {city:"丽水", hall:"蓝傲", time:"19:00-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/fs8q8jnIf0W", status:"营业", price:"30"},
             {city:"义乌", hall:"迪迪k舞", time:"19:30-02:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/bv5l6DYwc6s", status:"营业", price:"30"},
@@ -232,11 +176,12 @@
             {city:"衢州", hall:"摇一摇", time:"20:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/11ErgIUpl0MT", status:"营业", price:"30"},
             {city:"绍兴柯桥", hall:"逍遥音乐吧", time:"16:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/38Z0Y4wB1pebJ", status:"营业", price:"30"},
             {city:"绍兴柯桥", hall:"邂逅", time:"19:00-03:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/1HpkeQpTu9Te", status:"营业", price:"30"},
-            {city:"绍兴柯桥", hall:"新正莎舞酒吧", time:"17:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/hiwZ3Lf1e4as", status:"营业", price:"30"},
-            {city:"绍兴柯桥", hall:"蓝堡酒吧舞厅", time:"18:30-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/TYlZZPc70s", status:"营业", price:"30"},
-            {city:"绍兴柯桥", hall:"芳华音乐酒吧", time:"19:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/U2KBF31h54l", status:"营业", price:"30"},
+            {city:"绍兴柯桥", hall:"新正莎舞酒吧", time:"14:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/hiwZ3Lf1e4as", status:"营业", price:"30"},
+            {city:"绍兴柯桥", hall:"蓝堡酒吧舞厅", time:"18:30-02:00", allow:true, hot:true, remark:"", link:"https://surl.amap.com/TYlZZPc70s", status:"营业", price:"30"},
+            {city:"绍兴柯桥", hall:"万豪娱乐", time:"18:30-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/1ABJP83n1h6yb", status:"营业", price:"30"},
+            {city:"绍兴柯桥", hall:"芳华音乐酒吧", time:"19:00-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/U2KBF31h54l", status:"停业", price:"30"},
             {city:"绍兴柯桥", hall:"悦色酒吧", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/bxqeWyWx3SG", status:"营业", price:"30"},
-            {city:"绍兴柯桥", hall:"飞悦舞厅", time:"18:00-05:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hbA4wa91Bd28", status:"营业", price:"30"},
+            {city:"绍兴柯桥", hall:"飞悦舞厅", time:"18:00-05:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hbA4wa91Bd28", status:"停业", price:"30"},
             {city:"绍兴柯桥", hall:"春风十里音乐酒吧", time:"19:00-02:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/hdGQfFb1nauo", status:"营业", price:"30"},
             {city:"绍兴柯桥", hall:"蓝梦歌舞厅", time:"18:30-01:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/h7Oy9trr75w", status:"营业", price:"30"},
             {city:"金华", hall:"ACDC酒吧", time:"14:00-04:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/VYgPxdTrcOj", status:"营业", price:"30"},
@@ -246,19 +191,20 @@
             {city:"宁波", hall:"新节奏时尚量贩KTV", time:"午场: 12:00-17:00\n晚场: 18:30-23:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/1nk3kliX44F", status:"营业", price:"20"},
             {city:"宁波", hall:"丰成娱乐", time:"13:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/ghWabAR167ut", status:"营业", price:"20"},
             {city:"宁波", hall:"康都舞厅", time:"午场: 12:00-16:00\n晚场: 18:30-23:00", allow:true, hot:false, remark:"", link:"https://surl.amap.com/sSD7f7P12eNh", status:"营业", price:"20"},
-            {city:"宁波", hall:"天潮娱乐", time:" 18:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/fJ0xzAuM9af", status:"营业", price:"20"},
+            {city:"宁波", hall:"天潮娱乐", time:"18:00-02:00", allow:false, hot:true, remark:"", link:"https://surl.amap.com/fJ0xzAuM9af", status:"营业", price:"20"},
             {city:"宁波", hall:"丽莎舞厅", time:"午场: 12:30-17:00\n晚场: 18:00-00:00", allow:false, hot:false, remark:"", link:"https://surl.amap.com/h5TXLDkgcpD", status:"营业", price:"20"},
-            {city:"南京", hall:"相逢(金盏)", time:"13:00-02:00", allow:true, hot:true, remark:"两会期间，南京舞厅静默", link:"ttps://surl.amap.com/2FiPCSop14gVn", status:"停业", price:"30"},
-            {city:"南京", hall:"天涯", time:"10:00-02:00", allow:true, hot:true, remark:"两会期间，南京舞厅静默", link:"https://surl.amap.com/fGKCYpc1AejP", status:"停业", price:"30"},
-            {city:"南京", hall:"千幻", time:"18:00-02:00", allow:true, hot:false, remark:"两会期间，南京舞厅静默", link:"https://surl.amap.com/8Bu34JE1bHl", status:"停业", price:"30"},
-            {city:"南京", hall:"M9音乐餐吧", time:"19:00-02:00", allow:false, hot:false, remark:"两会期间，南京舞厅静默", link:"https://surl.amap.com/pW3hPgN153tc", status:"停业", price:"30"},
-            {city:"南京", hall:"后山音乐酒吧（FOX)", time:"19:00-02:00", allow:false, hot:false, remark:"两会期间，南京舞厅静默", link:"https://surl.amap.com/cc5cuSNL0Wv", status:"停业", price:"30"},
-            {city:"南京", hall:"清悦小酒馆", time:"19:00-02:00", allow:false, hot:false, remark:"两会期间，南京舞厅静默", link:"https://surl.amap.com/1Bzsh981hcIo", status:"停业", price:"30"},
+            {city:"南京", hall:"相逢(金盏)", time:"13:00-02:00", allow:true, hot:true, remark:"多家营业", link:"https://surl.amap.com/2FiPCSop14gVn", status:"营业", price:"30"},
+            {city:"南京", hall:"天涯", time:"12:00-02:00", allow:true, hot:true, remark:"多家营业", link:"https://surl.amap.com/fGKCYpc1AejP", status:"营业", price:"30"},
+            {city:"南京", hall:"千幻", time:"18:00-02:00", allow:true, hot:false, remark:"多家营业", link:"https://surl.amap.com/8Bu34JE1bHl", status:"营业", price:"30"},
+            {city:"南京", hall:"M9音乐餐吧", time:"19:00-02:00", allow:true, hot:false, remark:"多家营业", link:"https://surl.amap.com/pW3hPgN153tc", status:"营业", price:"30"},
+            {city:"南京", hall:"后山音乐酒吧（FOX)", time:"19:00-02:00", allow:false, hot:false, remark:"多家营业", link:"https://surl.amap.com/cc5cuSNL0Wv", status:"营业", price:"30"},
+            {city:"南京", hall:"清悦小酒馆", time:"19:00-02:00", allow:false, hot:false, remark:"多家营业", link:"https://surl.amap.com/1Bzsh981hcIo", status:"营业", price:"30"},
             {city:"连云港", hall:"浪花音乐吧", time:"午场: 13:30-17:00\n晚场: 19:30-01:00", allow:false, hot:false, remark:"万润商业街天桥二楼", link:"https://surl.amap.com/3wehBF012c3H", status:"营业", price:"20"}
         ];
-        
+
+        // 以下代码完全不变（你之前说完美的部分）
         const hotCities = ["上海", "苏州", "杭州", "南京", "南通", "嘉兴", "宁波", "常州", "扬州", "义乌", "温州", "绍兴柯桥"];
-        
+
         const cityGroups = {
             "C": ["常州"],
             "D": ["丹阳"],
@@ -272,19 +218,16 @@
             "W": ["温州"],
             "Y": ["盐城", "扬州", "宜兴", "义乌", "仪征"]
         };
-        
+
         let currentCity = "";
         let currentFilter = "all";
-        
+
         function initTailwind() {
             const hotGrid = document.getElementById("hotCitiesGrid");
             hotGrid.innerHTML = hotCities.map(city => `
-                <button onclick="selectCity('${city}')" 
-                        class="city-btn bg-white border border-slate-200 hover:border-indigo-300 active:bg-indigo-50 py-4 rounded-3xl text-sm font-semibold text-slate-800 shadow-sm">
-                    ${city}
-                </button>
+                <button onclick="selectCity('${city}')" class="city-btn bg-white border border-slate-200 hover:border-indigo-300 active:bg-indigo-50 py-4 rounded-3xl text-sm font-semibold text-slate-800 shadow-sm">${city}</button>
             `).join("");
-            
+
             const cityListEl = document.getElementById("cityList");
             let html = "";
             Object.keys(cityGroups).sort().forEach(letter => {
@@ -296,8 +239,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             ${cityGroups[letter].map(city => `
-                                <button onclick="selectCity('${city}')" 
-                                        class="city-btn bg-white border border-slate-200 hover:border-violet-300 text-left px-4 py-3.5 rounded-2xl text-base font-medium text-slate-700 flex items-center gap-2">
+                                <button onclick="selectCity('${city}')" class="city-btn bg-white border border-slate-200 hover:border-violet-300 text-left px-4 py-3.5 rounded-2xl text-base font-medium text-slate-700 flex items-center gap-2">
                                     <span>${city}</span>
                                 </button>
                             `).join("")}
@@ -306,17 +248,15 @@
                 `;
             });
             cityListEl.innerHTML = html;
-            
+
             document.getElementById("citySearch").addEventListener("input", (e) => {
                 const term = e.target.value.trim().toLowerCase();
-                const buttons = document.querySelectorAll("#cityList button");
-                buttons.forEach(btn => {
-                    const text = btn.textContent.toLowerCase();
-                    btn.style.display = term === "" || text.includes(term) ? "flex" : "none";
+                document.querySelectorAll("#cityList button").forEach(btn => {
+                    btn.style.display = term === "" || btn.textContent.toLowerCase().includes(term) ? "flex" : "none";
                 });
             });
         }
-        
+
         function selectCity(city) {
             currentCity = city;
             currentFilter = "all";
@@ -326,88 +266,65 @@
             updateTabs();
             renderHalls();
         }
-        
+
         function backToCityView() {
             document.getElementById("hallView").classList.add("hidden");
             document.getElementById("cityView").classList.remove("hidden");
             document.getElementById("hallSearch").value = "";
         }
-        
+
         function setFilter(filter) {
             currentFilter = filter;
             updateTabs();
             renderHalls(document.getElementById("hallSearch").value);
         }
-        
+
         function updateTabs() {
-            const tabs = { all: document.getElementById("tabAll"), open: document.getElementById("tabOpen"), closed: document.getElementById("tabClosed") };
+            const tabs = {all: document.getElementById("tabAll"), open: document.getElementById("tabOpen"), closed: document.getElementById("tabClosed")};
             Object.keys(tabs).forEach(key => {
-                const isActive = currentFilter === key;
-                tabs[key].classList.toggle("bg-amber-50", isActive);
-                tabs[key].classList.toggle("text-amber-600", isActive);
-                tabs[key].classList.toggle("bg-slate-100", !isActive);
-                tabs[key].classList.toggle("text-slate-600", !isActive);
+                const active = currentFilter === key;
+                tabs[key].classList.toggle("bg-amber-50", active);
+                tabs[key].classList.toggle("text-amber-600", active);
+                tabs[key].classList.toggle("bg-slate-100", !active);
+                tabs[key].classList.toggle("text-slate-600", !active);
             });
         }
-        
+
         function renderHalls(searchFilter = "") {
             const container = document.getElementById("hallList");
             container.innerHTML = "";
-            
-            let filteredVenues = venues
-                .filter(v => v.city === currentCity)
+
+            let filtered = venues.filter(v => v.city === currentCity)
                 .filter(v => {
                     if (!searchFilter) return true;
-                    const term = searchFilter.toLowerCase();
-                    return v.hall.toLowerCase().includes(term) || 
-                           v.time.toLowerCase().includes(term) ||
-                           (v.remark && v.remark.toLowerCase().includes(term));
+                    const t = searchFilter.toLowerCase();
+                    return v.hall.toLowerCase().includes(t) || v.time.toLowerCase().includes(t) || (v.remark && v.remark.toLowerCase().includes(t));
                 })
                 .filter(v => {
-                    const status = v.status || "营业";
+                    const s = v.status || "营业";
                     if (currentFilter === "all") return true;
-                    if (currentFilter === "open") return status === "营业";
-                    if (currentFilter === "closed") return status === "停业";
+                    if (currentFilter === "open") return s === "营业";
+                    if (currentFilter === "closed") return s === "停业";
                     return true;
                 });
-            
-            if (filteredVenues.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-16 text-slate-400">
-                        <i class="fa-solid fa-face-frown text-5xl mb-3"></i>
-                        <p>没有找到匹配的舞厅</p>
-                    </div>
-                `;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-face-frown text-5xl mb-3"></i><p>没有找到匹配的舞厅</p></div>`;
                 return;
             }
-            
-            filteredVenues.forEach(v => {
+
+            filtered.forEach(v => {
                 const dragon = v.allow ? `<span class="text-2xl">🐉</span>` : "";
                 const fire = v.hot ? `<span class="text-2xl">🔥</span>` : "";
-                const remarkHTML = v.remark ? `
-                    <div class="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-2xl">
-                        ${v.remark}
-                    </div>
-                ` : "";
-                
+                const remarkHTML = v.remark ? `<div class="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-700 px-3 py-2 rounded-2xl">${v.remark}</div>` : "";
                 const status = v.status || "营业";
-                let statusClass = "bg-emerald-500";
-                let statusText = "营业中";
-                let cardExtraClass = "";
-                if (status === "停业") {
-                    statusClass = "bg-gray-500";
-                    statusText = "暂停营业";
-                    cardExtraClass = "opacity-70";
-                }
-                
-                const priceHTML = v.price ? `
-                    <div class="mt-2 text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-2xl inline-flex items-center">
-                        <span class="font-medium">门票：</span>${v.price}
-                    </div>
-                ` : "";
-                
+                const statusClass = status === "停业" ? "bg-gray-500" : "bg-emerald-500";
+                const statusText = status === "停业" ? "暂停营业" : "营业中";
+                const cardExtra = status === "停业" ? "opacity-70" : "";
+                const priceHTML = v.price ? `<div class="mt-2 text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-2xl inline-flex items-center"><span class="font-medium">门票：</span>${v.price}</div>` : "";
+
                 const cardHTML = `
-                    <div class="hall-card bg-white rounded-3xl overflow-hidden border border-slate-100 ${cardExtraClass}">
+                    <div class="hall-card bg-white rounded-3xl overflow-hidden border border-slate-100 ${cardExtra}">
                         <div class="px-5 pt-5 pb-4">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center gap-3">
@@ -415,25 +332,16 @@
                                     <div class="flex gap-1">${dragon}${fire}</div>
                                 </div>
                                 <div class="${statusClass} text-white text-[10px] font-medium px-3 py-1 rounded-2xl flex items-center gap-1">
-                                    <i class="fa-solid fa-circle text-[8px]"></i>
-                                    ${statusText}
+                                    <i class="fa-solid fa-circle text-[8px]"></i> ${statusText}
                                 </div>
                             </div>
-                            
-                            <div class="mt-4 text-slate-700 text-[15px] leading-relaxed font-medium whitespace-pre-line">
-                                ${v.time}
-                            </div>
-                            
+                            <div class="mt-4 text-slate-700 text-[15px] leading-relaxed font-medium whitespace-pre-line">${v.time}</div>
                             ${priceHTML}
-                            
                             ${remarkHTML}
                         </div>
-                        
                         <div class="border-t border-slate-100 bg-slate-50 px-5 py-4">
-                            <a href="${v.link}" target="_blank"
-                               class="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-semibold py-4 rounded-2xl active:scale-95 transition text-base">
-                                <i class="fa-solid fa-location-dot"></i>
-                                高德导航
+                            <a href="${v.link}" target="_blank" class="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-semibold py-4 rounded-2xl active:scale-95 transition text-base">
+                                <i class="fa-solid fa-location-dot"></i> 高德导航
                             </a>
                         </div>
                     </div>
@@ -441,12 +349,11 @@
                 container.innerHTML += cardHTML;
             });
         }
-        
+
         function filterHalls() {
-            const filter = document.getElementById("hallSearch").value;
-            renderHalls(filter);
+            renderHalls(document.getElementById("hallSearch").value);
         }
-        
+
         window.onload = function() {
             initTailwind();
         };

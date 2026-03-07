@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026年3月7日 江浙沪今日舞讯</title>
+    <title>江浙沪今日舞讯</title>  <!-- 初始值，JS 会更新 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -27,7 +27,7 @@
                         <i class="fa-solid fa-music text-indigo-600 text-2xl"></i>
                         <div>
                             <div class="font-bold text-xl tracking-tight text-slate-900">今日舞讯</div>
-                            <div class="text-xs text-slate-500 -mt-1">2026.03.06 江浙沪</div>
+                            <div id="dateSmall" class="text-xs text-slate-500 -mt-1">加载中...</div>
                         </div>
                     </div>
                     <div class="text-right">
@@ -99,6 +99,31 @@
     </a>
     
     <script>
+        // =====================================
+        //  获取北京时间（Asia/Shanghai）
+        // =====================================
+        function getBeijingDate() {
+            const formatter = new Intl.DateTimeFormat('zh-CN', {
+                timeZone: 'Asia/Shanghai',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            const parts = formatter.formatToParts(new Date());
+            const year = parts.find(p => p.type === 'year').value;
+            const month = parts.find(p => p.type === 'month').value;
+            const day = parts.find(p => p.type === 'day').value;
+            return { year, month, day };
+        }
+
+        function updateDateDisplay() {
+            const { year, month, day } = getBeijingDate();
+            // 更新头部小字
+            document.getElementById('dateSmall').textContent = `${year}.${month}.${day} 江浙沪`;
+            // 更新浏览器标签标题
+            document.title = `${year}年${month}月${day}日 江浙沪今日舞讯`;
+        }
+
         const venues = [
             {city:"宜兴", hall:"蓝迪", time:"午场: 12:30-16:30 \n晚场: 18:30-00:00", allow:true, hot:true, remark:"2026年3月2日晚清场抓人", link:"https://surl.amap.com/7OWtqsUP17r", status:"停业", price:"下午20/晚上30"},
             {city:"宜兴", hall:"蓝调", time:"19:00-01:00", allow:false, hot:false, remark:"今日暂停", link:"https://surl.amap.com/dFKXitv1Vj", status:"停业", price:"30"},
@@ -363,6 +388,7 @@
 
         window.onload = function() {
             initTailwind();
+            updateDateDisplay();   // 页面加载时更新北京时间
         };
     </script>
 </body>

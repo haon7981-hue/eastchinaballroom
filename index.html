@@ -549,9 +549,17 @@
     }
 
     window.onload = function() {
-        initTailwind();
+    initTailwind();
+    updateDateDisplay();
+
+    // 每分钟自动刷新一次当前状态
+    setInterval(() => {
         updateDateDisplay();
-    };
+        if (!document.getElementById("hallView").classList.contains("hidden")) {
+            renderHalls(document.getElementById("hallSearch").value);
+        }
+    }, 60000);
+};
 </script>
 </body>
 </html>

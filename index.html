@@ -158,12 +158,18 @@
     function getBeijingDate() {
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        const beijing = new Date(utc + (3600000 * 8)); // +8小时
+        const beijing = new Date(utc + (3600000 * 8));
         return {
             year: beijing.getFullYear(),
             month: String(beijing.getMonth() + 1).padStart(2, '0'),
             day: String(beijing.getDate()).padStart(2, '0')
         };
+    }
+
+    function getBeijingNow() {
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        return new Date(utc + (3600000 * 8));
     }
 
     function updateDateDisplay() {
@@ -374,6 +380,24 @@
     let currentCity = "";
     let currentFilter = "all";
 
+    function getDisplayStatus(venue) {
+        const rawStatus = venue.status || "营业";
+        if (rawStatus !== "营业") return rawStatus;
+
+        const timeText = venue.time || "";
+        const match = timeText.match(/(\d{1,2}):(\d{2})/);
+        if (!match) return "营业";
+
+        const startHour = parseInt(match[1], 10);
+        const startMinute = parseInt(match[2], 10);
+
+        const beijingNow = getBeijingNow();
+        const currentMinutes = beijingNow.getHours() * 60 + beijingNow.getMinutes();
+        const startMinutes = startHour * 60 + startMinute;
+
+        return currentMinutes < startMinutes ? "未到营业时间" : "营业";
+    }
+
     function initTailwind() {
         // 热门城市
         document.getElementById("hotCitiesGrid").innerHTML = hotCities.map(city => `
@@ -483,20 +507,20 @@
             const dragon = v.allow ? '<span class="text-2xl">🐉</span>' : '';
             const fire   = v.hot   ? '<span class="text-2xl">🔥</span>' : '';
             const remark = v.remark ? `<div class="mt-3 text-sm text-purple-300 bg-purple-950/50 p-3 rounded-xl">${v.remark}</div>` : '';
-            const status = v.status || "营业";
-            const statusClass = status === "停业" ? "bg-red-600/80" : "bg-emerald-600/80";
+            const status = getDisplayStatus(v);
+            const statusClass = status === "停业" ? "bg-red-600/80" : (status === "未到营业时间" ? "bg-amber-500/80" : "bg-emerald-600/80");
             const priceTag = v.price ? `<div class="mt-2 inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-xs font-medium px-4 py-1.5 rounded-full shadow-sm min-w-[100px] max-w-fit"><i class="fa-solid fa-ticket-simple text-sm opacity-90"></i>门票：${v.price}</div>` : '';
 
             const card = `
                 <div class="hall-card rounded-3xl overflow-hidden">
                     <div class="p-5">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-center gap-3">
-                                <div class="text-xl font-bold">${v.hall}</div>
-                                <div class="flex gap-2">${dragon}${fire}</div>
+                        <div class="flex justify-between items-start gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="text-xl font-bold break-words">${v.hall}</div>
+                                <div class="flex gap-2 shrink-0">${dragon}${fire}</div>
                             </div>
-                            <div class="${statusClass} px-3 py-1 rounded-full text-sm font-medium">
-                                ${status === "营业" ? "营业中" : "暂停"}
+                            <div class="${statusClass} px-3 py-1 rounded-full text-sm font-medium shrink-0">
+                                ${status === "停业" ? "暂停" : (status === "未到营业时间" ? "未到营业时间" : "营业中")}
                             </div>
                         </div>
 

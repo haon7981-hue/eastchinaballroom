@@ -68,6 +68,58 @@
             color: white;
             box-shadow: 0 0 15px #a855f7;
         }
+
+        .danmu-ticker-box {
+            background: rgba(10, 0, 20, 0.55);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 16px;
+            overflow: hidden;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .danmu-ticker {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 12px 0;
+        }
+
+        .danmu-ticker-track {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            min-width: max-content;
+            animation: danmuScroll 32s linear infinite;
+        }
+
+        .danmu-ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding-right: 28px;
+            font-size: 14px;
+            color: #f5e9ff;
+        }
+
+        .danmu-ticker-time {
+            color: #f0abfc;
+            font-weight: 700;
+        }
+
+        .danmu-ticker-tag {
+            color: #c084fc;
+            font-weight: 700;
+        }
+
+        @keyframes danmuScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
     </style>
 </head>
 <body>
@@ -102,28 +154,6 @@
 
 
         <div class="px-4 pt-4">
-            <!-- 实况弹幕面板 -->
-            <div class="mb-6 hall-card rounded-3xl overflow-hidden">
-                <div class="p-5">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <div class="text-lg font-bold text-pink-300 neon-glow">
-                            <i class="fa-solid fa-bullhorn mr-2"></i>实况弹幕
-                        </div>
-                        <div id="danmuDayText" class="text-xs text-purple-300 shrink-0"></div>
-                    </div>
-
-                    <div class="text-xs text-purple-300 mb-3">
-                        群内发送“实况内容”即可上墙，弹幕按北京时间凌晨2点自动切换新一天
-                    </div>
-
-                    <div id="danmuStatus" class="text-xs text-purple-400 mb-3">弹幕加载中...</div>
-
-                    <div id="danmuList" class="space-y-3">
-                        <div class="text-sm text-purple-400 py-4 text-center">暂无实况弹幕</div>
-                    </div>
-                </div>
-            </div>
-
             <div class="mb-6">
                 <div class="text-lg font-bold text-pink-300 mb-3 neon-glow">热门城市 🔥</div>
                 <div id="hotCitiesGrid" class="grid grid-cols-4 gap-3"></div>
@@ -163,12 +193,54 @@
             <button id="tabClosed" onclick="setFilter('closed')" class="tab-btn px-6 py-2 rounded-full font-medium">停业</button>
         </div>
 
+        <div class="px-4 pt-4">
+            <div class="hall-card rounded-3xl overflow-hidden">
+                <div class="p-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div class="text-base font-bold text-pink-300 neon-glow flex items-center gap-2">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <span id="cityDanmuTitle">城市实况弹幕</span>
+                        </div>
+                        <button onclick="openDanmuModal()" class="neon-btn px-3 py-1.5 rounded-full text-xs bg-gradient-to-r from-purple-600 to-pink-600 text-white whitespace-nowrap">
+                            查看当天全部
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <div id="cityDanmuDay" class="text-xs text-purple-300"></div>
+                        <div id="cityDanmuStatus" class="text-xs text-purple-400 text-right">加载中...</div>
+                    </div>
+
+                    <div class="danmu-ticker-box" onclick="openDanmuModal()">
+                        <div id="cityDanmuEmpty" class="text-sm text-purple-400 py-2 text-center">暂无当日实况弹幕</div>
+                        <div id="cityDanmuTicker" class="danmu-ticker hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="px-4 py-5">
             <div id="hallList" class="space-y-5"></div>
         </div>
     </div>
 
 </div>
+
+
+<div id="danmuModal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeDanmuModal()"></div>
+    <div class="absolute left-1/2 top-1/2 w-[92%] max-w-[480px] -translate-x-1/2 -translate-y-1/2 hall-card rounded-3xl overflow-hidden border-purple-400/60 shadow-2xl">
+        <div class="bg-gradient-to-r from-purple-900 to-pink-900 px-4 py-4 flex items-center justify-between">
+            <div>
+                <div id="danmuModalTitle" class="text-lg font-bold neon-glow">当天实况弹幕</div>
+                <div id="danmuModalSub" class="text-xs text-purple-200 mt-1"></div>
+            </div>
+            <button onclick="closeDanmuModal()" class="text-white text-2xl leading-none">&times;</button>
+        </div>
+        <div id="danmuModalList" class="max-h-[70vh] overflow-y-auto px-4 py-4 space-y-3 bg-black/30"></div>
+    </div>
+</div>
+
 
 <!-- 悬浮 Telegram 按钮 -->
 <a href="https://t.me/eastchinaballroom" target="_blank"
@@ -439,8 +511,13 @@
     let currentCity = "";
     let currentFilter = "all";
 
+
     const DANMU_API_BASE = "http://205.234.170.146:8000";
     const DANMU_WS_URL = "ws://205.234.170.146:8000/ws";
+
+    let currentCityDanmu = [];
+    let currentDanmuDay = "";
+    let danmuSocket = null;
 
     function escapeHtml(text) {
         return String(text || "")
@@ -460,14 +537,57 @@
         return "";
     }
 
-    function renderDanmuItems(items) {
-        const danmuList = document.getElementById("danmuList");
+    function setCityDanmuHeader() {
+        document.getElementById("cityDanmuTitle").textContent = currentCity ? `${currentCity}实况弹幕` : "城市实况弹幕";
+        document.getElementById("danmuModalTitle").textContent = currentCity ? `${currentCity}当天实况弹幕` : "当天实况弹幕";
+        document.getElementById("danmuModalSub").textContent = currentDanmuDay ? `弹幕日 ${currentDanmuDay}（北京时间凌晨2点切换）` : "";
+        document.getElementById("cityDanmuDay").textContent = currentDanmuDay ? `弹幕日 ${currentDanmuDay}` : "";
+    }
+
+    function renderCityDanmuTicker(items) {
+        const emptyEl = document.getElementById("cityDanmuEmpty");
+        const tickerEl = document.getElementById("cityDanmuTicker");
+
         if (!items || items.length === 0) {
-            danmuList.innerHTML = `<div class="text-sm text-purple-400 py-4 text-center">暂无实况弹幕</div>`;
+            emptyEl.classList.remove("hidden");
+            tickerEl.classList.add("hidden");
+            tickerEl.innerHTML = "";
             return;
         }
 
-        danmuList.innerHTML = items.map(item => {
+        emptyEl.classList.add("hidden");
+        tickerEl.classList.remove("hidden");
+
+        const tickerHtml = items.map(item => {
+            const time = item.display_time || "";
+            const title = getDanmuTitle(item);
+            const text = item.raw_text || "";
+            return `
+                <div class="danmu-ticker-item">
+                    <span class="danmu-ticker-time">${escapeHtml(time)}</span>
+                    ${title ? `<span class="danmu-ticker-tag">${escapeHtml(title)}</span>` : ""}
+                    <span>${escapeHtml(text)}</span>
+                </div>
+            `;
+        }).join("");
+
+        tickerEl.innerHTML = `
+            <div class="danmu-ticker-track">
+                ${tickerHtml}
+                ${tickerHtml}
+            </div>
+        `;
+    }
+
+    function renderDanmuModalList() {
+        const listEl = document.getElementById("danmuModalList");
+
+        if (!currentCityDanmu || currentCityDanmu.length === 0) {
+            listEl.innerHTML = `<div class="text-sm text-purple-400 py-10 text-center">暂无当日实况弹幕</div>`;
+            return;
+        }
+
+        listEl.innerHTML = currentCityDanmu.map(item => {
             const title = getDanmuTitle(item);
             const time = item.display_time || "";
             const rawText = item.raw_text || "";
@@ -478,105 +598,103 @@
                         <div class="text-sm font-bold text-pink-300 break-words">${escapeHtml(title)}</div>
                         <div class="text-xs text-purple-300 shrink-0">${escapeHtml(time)}</div>
                     </div>
-                    <div class="text-sm text-purple-100 leading-relaxed break-words">
-                        ${escapeHtml(rawText)}
-                    </div>
+                    <div class="text-sm text-purple-100 leading-relaxed break-words">${escapeHtml(rawText)}</div>
                 </div>
             `;
         }).join("");
     }
 
-    function prependDanmuItem(item) {
-        const danmuList = document.getElementById("danmuList");
-        const currentEmpty = danmuList.querySelector(".text-center");
-        if (currentEmpty && danmuList.children.length === 1) {
-            danmuList.innerHTML = "";
-        }
+    function openDanmuModal() {
+        if (!currentCity) return;
+        renderDanmuModalList();
+        document.getElementById("danmuModal").classList.remove("hidden");
+    }
 
-        const title = getDanmuTitle(item);
-        const time = item.display_time || "";
-        const rawText = item.raw_text || "";
+    function closeDanmuModal() {
+        document.getElementById("danmuModal").classList.add("hidden");
+    }
 
-        const div = document.createElement("div");
-        div.className = "bg-purple-950/40 border border-purple-700/40 rounded-2xl p-3";
-        div.setAttribute("data-id", item.id || "");
+    async function loadCityDanmu(city) {
+        const statusEl = document.getElementById("cityDanmuStatus");
+        currentCityDanmu = [];
+        renderCityDanmuTicker([]);
+        statusEl.textContent = "加载中...";
 
-        div.innerHTML = `
-            <div class="flex items-start justify-between gap-3 mb-2">
-                <div class="text-sm font-bold text-pink-300 break-words">${escapeHtml(title)}</div>
-                <div class="text-xs text-purple-300 shrink-0">${escapeHtml(time)}</div>
-            </div>
-            <div class="text-sm text-purple-100 leading-relaxed break-words">
-                ${escapeHtml(rawText)}
-            </div>
-        `;
-
-        danmuList.prepend(div);
-
-        while (danmuList.children.length > 50) {
-            danmuList.removeChild(danmuList.lastElementChild);
+        try {
+            const res = await fetch(`${DANMU_API_BASE}/api/danmu/list?city=${encodeURIComponent(city)}`);
+            const data = await res.json();
+            currentDanmuDay = data.danmu_day || "";
+            currentCityDanmu = Array.isArray(data.items) ? data.items.slice().reverse() : [];
+            setCityDanmuHeader();
+            renderCityDanmuTicker(currentCityDanmu);
+            statusEl.textContent = "实时连接中...";
+            renderDanmuModalList();
+        } catch (err) {
+            console.error(err);
+            statusEl.textContent = "加载失败";
+            currentCityDanmu = [];
+            setCityDanmuHeader();
+            renderCityDanmuTicker([]);
         }
     }
 
-    async function loadDanmuHistory() {
-        const statusEl = document.getElementById("danmuStatus");
-        const dayEl = document.getElementById("danmuDayText");
+    function prependCityDanmu(item) {
+        if (!item || item.city !== currentCity) return;
 
-        try {
-            statusEl.textContent = "弹幕加载中...";
-            const res = await fetch(`${DANMU_API_BASE}/api/danmu/list`);
-            const data = await res.json();
-
-            renderDanmuItems(data.items || []);
-            dayEl.textContent = data.danmu_day ? `弹幕日 ${data.danmu_day}` : "";
-            statusEl.textContent = "弹幕已连接";
-        } catch (err) {
-            console.error(err);
-            statusEl.textContent = "弹幕加载失败";
-        }
+        currentCityDanmu.unshift(item);
+        if (currentCityDanmu.length > 100) currentCityDanmu = currentCityDanmu.slice(0, 100);
+        renderCityDanmuTicker(currentCityDanmu);
+        renderDanmuModalList();
     }
 
     function connectDanmuWs() {
-        const statusEl = document.getElementById("danmuStatus");
-        const dayEl = document.getElementById("danmuDayText");
-        const ws = new WebSocket(DANMU_WS_URL);
+        if (danmuSocket && (danmuSocket.readyState === WebSocket.OPEN || danmuSocket.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
 
-        ws.onopen = () => {
-            statusEl.textContent = "弹幕实时连接成功";
+        const statusEl = document.getElementById("cityDanmuStatus");
+        danmuSocket = new WebSocket(DANMU_WS_URL);
+
+        danmuSocket.onopen = () => {
+            statusEl.textContent = "实时连接成功";
             setInterval(() => {
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send("ping");
+                if (danmuSocket && danmuSocket.readyState === WebSocket.OPEN) {
+                    danmuSocket.send("ping");
                 }
             }, 15000);
         };
 
-        ws.onmessage = (event) => {
+        danmuSocket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
 
-                if (data.type === "new_danmu" && data.item) {
-                    prependDanmuItem(data.item);
+                if (data.type === "reset_day") {
+                    currentDanmuDay = data.danmu_day || "";
+                    currentCityDanmu = [];
+                    setCityDanmuHeader();
+                    renderCityDanmuTicker([]);
+                    renderDanmuModalList();
+                    return;
                 }
 
-                if (data.type === "reset_day") {
-                    document.getElementById("danmuList").innerHTML =
-                        `<div class="text-sm text-purple-400 py-4 text-center">新弹幕日已开始，等待新的实况...</div>`;
-                    dayEl.textContent = data.danmu_day ? `弹幕日 ${data.danmu_day}` : "";
+                if (data.type === "new_danmu" && data.item) {
+                    prependCityDanmu(data.item);
                 }
             } catch (e) {
                 console.error("弹幕消息解析失败", e);
             }
         };
 
-        ws.onclose = () => {
-            statusEl.textContent = "弹幕连接断开，3秒后重连...";
+        danmuSocket.onclose = () => {
+            statusEl.textContent = "连接断开，重连中...";
             setTimeout(connectDanmuWs, 3000);
         };
 
-        ws.onerror = () => {
-            statusEl.textContent = "弹幕连接异常";
+        danmuSocket.onerror = () => {
+            statusEl.textContent = "连接异常";
         };
     }
+
 
 
     function getDisplayStatus(venue) {
@@ -642,12 +760,15 @@
         document.getElementById("currentCityTitle").textContent = city;
         updateTabs();
         renderHalls();
+        setCityDanmuHeader();
+        loadCityDanmu(city);
     }
 
     function backToCityView() {
         document.getElementById("hallView").classList.add("hidden");
         document.getElementById("cityView").classList.remove("hidden");
         document.getElementById("hallSearch").value = "";
+        closeDanmuModal();
     }
 
     function setFilter(filter) {

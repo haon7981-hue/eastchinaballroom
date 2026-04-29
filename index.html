@@ -100,7 +100,30 @@
             </div>
         </div>
 
+
         <div class="px-4 pt-4">
+            <!-- 实况弹幕面板 -->
+            <div class="mb-6 hall-card rounded-3xl overflow-hidden">
+                <div class="p-5">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div class="text-lg font-bold text-pink-300 neon-glow">
+                            <i class="fa-solid fa-bullhorn mr-2"></i>实况弹幕
+                        </div>
+                        <div id="danmuDayText" class="text-xs text-purple-300 shrink-0"></div>
+                    </div>
+
+                    <div class="text-xs text-purple-300 mb-3">
+                        群内发送“实况内容”即可上墙，弹幕按北京时间凌晨2点自动切换新一天
+                    </div>
+
+                    <div id="danmuStatus" class="text-xs text-purple-400 mb-3">弹幕加载中...</div>
+
+                    <div id="danmuList" class="space-y-3">
+                        <div class="text-sm text-purple-400 py-4 text-center">暂无实况弹幕</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="mb-6">
                 <div class="text-lg font-bold text-pink-300 mb-3 neon-glow">热门城市 🔥</div>
                 <div id="hotCitiesGrid" class="grid grid-cols-4 gap-3"></div>
@@ -416,6 +439,146 @@
     let currentCity = "";
     let currentFilter = "all";
 
+    const DANMU_API_BASE = "http://205.234.170.146:8000";
+    const DANMU_WS_URL = "ws://205.234.170.146:8000/ws";
+
+    function escapeHtml(text) {
+        return String(text || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function getDanmuTitle(item) {
+        const city = item.city || "";
+        const hall = item.hall || "";
+        if (city && hall) return `[${city} · ${hall}]`;
+        if (city) return `[${city}]`;
+        if (hall) return `[${hall}]`;
+        return "";
+    }
+
+    function renderDanmuItems(items) {
+        const danmuList = document.getElementById("danmuList");
+        if (!items || items.length === 0) {
+            danmuList.innerHTML = `<div class="text-sm text-purple-400 py-4 text-center">暂无实况弹幕</div>`;
+            return;
+        }
+
+        danmuList.innerHTML = items.map(item => {
+            const title = getDanmuTitle(item);
+            const time = item.display_time || "";
+            const rawText = item.raw_text || "";
+
+            return `
+                <div class="bg-purple-950/40 border border-purple-700/40 rounded-2xl p-3">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div class="text-sm font-bold text-pink-300 break-words">${escapeHtml(title)}</div>
+                        <div class="text-xs text-purple-300 shrink-0">${escapeHtml(time)}</div>
+                    </div>
+                    <div class="text-sm text-purple-100 leading-relaxed break-words">
+                        ${escapeHtml(rawText)}
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    function prependDanmuItem(item) {
+        const danmuList = document.getElementById("danmuList");
+        const currentEmpty = danmuList.querySelector(".text-center");
+        if (currentEmpty && danmuList.children.length === 1) {
+            danmuList.innerHTML = "";
+        }
+
+        const title = getDanmuTitle(item);
+        const time = item.display_time || "";
+        const rawText = item.raw_text || "";
+
+        const div = document.createElement("div");
+        div.className = "bg-purple-950/40 border border-purple-700/40 rounded-2xl p-3";
+        div.setAttribute("data-id", item.id || "");
+
+        div.innerHTML = `
+            <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="text-sm font-bold text-pink-300 break-words">${escapeHtml(title)}</div>
+                <div class="text-xs text-purple-300 shrink-0">${escapeHtml(time)}</div>
+            </div>
+            <div class="text-sm text-purple-100 leading-relaxed break-words">
+                ${escapeHtml(rawText)}
+            </div>
+        `;
+
+        danmuList.prepend(div);
+
+        while (danmuList.children.length > 50) {
+            danmuList.removeChild(danmuList.lastElementChild);
+        }
+    }
+
+    async function loadDanmuHistory() {
+        const statusEl = document.getElementById("danmuStatus");
+        const dayEl = document.getElementById("danmuDayText");
+
+        try {
+            statusEl.textContent = "弹幕加载中...";
+            const res = await fetch(`${DANMU_API_BASE}/api/danmu/list`);
+            const data = await res.json();
+
+            renderDanmuItems(data.items || []);
+            dayEl.textContent = data.danmu_day ? `弹幕日 ${data.danmu_day}` : "";
+            statusEl.textContent = "弹幕已连接";
+        } catch (err) {
+            console.error(err);
+            statusEl.textContent = "弹幕加载失败";
+        }
+    }
+
+    function connectDanmuWs() {
+        const statusEl = document.getElementById("danmuStatus");
+        const dayEl = document.getElementById("danmuDayText");
+        const ws = new WebSocket(DANMU_WS_URL);
+
+        ws.onopen = () => {
+            statusEl.textContent = "弹幕实时连接成功";
+            setInterval(() => {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send("ping");
+                }
+            }, 15000);
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+
+                if (data.type === "new_danmu" && data.item) {
+                    prependDanmuItem(data.item);
+                }
+
+                if (data.type === "reset_day") {
+                    document.getElementById("danmuList").innerHTML =
+                        `<div class="text-sm text-purple-400 py-4 text-center">新弹幕日已开始，等待新的实况...</div>`;
+                    dayEl.textContent = data.danmu_day ? `弹幕日 ${data.danmu_day}` : "";
+                }
+            } catch (e) {
+                console.error("弹幕消息解析失败", e);
+            }
+        };
+
+        ws.onclose = () => {
+            statusEl.textContent = "弹幕连接断开，3秒后重连...";
+            setTimeout(connectDanmuWs, 3000);
+        };
+
+        ws.onerror = () => {
+            statusEl.textContent = "弹幕连接异常";
+        };
+    }
+
+
     function getDisplayStatus(venue) {
         const rawStatus = venue.status || "营业";
         if (rawStatus !== "营业") return rawStatus;
@@ -587,6 +750,8 @@
     window.onload = function() {
     initTailwind();
     updateDateDisplay();
+    loadDanmuHistory();
+    connectDanmuWs();
 
     // 每分钟自动刷新一次当前状态
     setInterval(() => {
